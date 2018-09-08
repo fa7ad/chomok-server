@@ -1,145 +1,144 @@
-const Joi = require('joi')
-const bcrypt = require('bcrypt')
-const { Strategy: LocalStrategy } = require('passport-local')
-const { DateTime } = require('luxon')
-const { ensureLoggedIn } = require('connect-ensure-login')
+import { Router } from 'express'
 
-module.exports = function (app, db, passport) {
-  passport.use(
-    'local',
-    new LocalStrategy(
-      {
-        usernameField: 'username',
-        passwordField: 'password'
-      },
-      async function (username, password, done) {
-        try {
-          const {
-            docs: [user]
-          } = await db.find({
-            selector: { username },
-            use_index: 'users-username-idx'
-          })
-          if (!user) return done(null, false, { message: 'Incorrect username' })
+import { DateTime } from 'luxon'
+import { object, string, boolean } from 'joi'
 
-          const correct = await bcrypt.compare(password, user.password)
-          if (!correct) {
-            return done(null, false, { message: 'Incorrect password' })
-          }
+import { compare } from 'bcrypt'
+import { ensureLoggedIn } from 'connect-ensure-login'
+import passport from 'passport'
 
-          return done(null, {
-            ...user,
-            type: user.admin ? 'admin' : user.business ? 'partner' : 'user'
-          })
-        } catch (err) {
-          return done(err)
+import { dbs } from '../lib/init'
+const db = dbs.users
+
+// Define routes under /auth
+const route = Router()
+
+route.post('/register', regUser, verifyAdmin, function (req, res) {
+  db.post({ ...req.body })
+    .then(_ => {
+      if (!req.user) req.login()
+      res.json({ ok: true })
+    })
+    .catch(_ => {
+      res.status(500).json({
+        ok: false,
+        error: { message: 'Internal server error' }
+      })
+    })
+})
+
+route.post(
+  '/login',
+  passport.authenticate('local', {
+    failureMessage: true
+  }),
+  function (req, res) {
+    res.json({ ok: true, id: req.user._id })
+  }
+)
+
+route.get('/loggedIn', (req, res) => res.json({ ok: !!req.user }))
+
+route.get('/logout', function (req, res) {
+  req.logout()
+  res.json({ ok: true })
+})
+
+export default route
+
+//= Helper functions
+
+async function regUser (req, res, next) {
+  try {
+    const schema = object().keys({
+      name: string()
+        .alphanum()
+        .min(3)
+        .required(),
+      phone: string()
+        .regex(/^(\+88|0088)?01[5-9]\d{8}$/)
+        .required(),
+      email: string()
+        .email()
+        .required(),
+      username: string()
+        .lowercase()
+        .regex(/^[a-z][^\s]{4,}$/)
+        .required(),
+      password: string()
+        .required()
+        .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/)
+        .required(),
+      dateReg: string()
+        .regex(/^(\d{6}|\d{8})$/)
+        .default(() => DateTime.local().toFormat('yyyyLLdd')),
+      admin: boolean().default(false),
+      business: object()
+        .keys({
+          address: string(),
+          name: string(),
+          phone: string().regex(/^(\+88|0088)?0(1[5-9]|2)\d{8}$/)
+        })
+        .requiredKeys(['address', 'name', 'phone'])
+    })
+
+    const data = await schema.validate(req.body)
+    const { docs: users } = await db.find({
+      selector: { username: data.username }
+    })
+    if (users.length > 0) {
+      return res.status(409).json({
+        ok: false,
+        error: {
+          message: 'Username already exists'
         }
-      }
-    )
-  )
-
-  passport.serializeUser(function (user, done) {
-    done(null, user._id)
-  })
-
-  passport.deserializeUser(function (id, done) {
-    db.get(id, done)
-  })
-
-  app.post(
-    '/auth/login',
-    passport.authenticate('local', {
-      failureMessage: true
-    }),
-    function (req, res) {
-      res.json({ ok: true, id: req.user._id })
+      })
     }
-  )
 
-  app.get('/auth/logout', function (req, res) {
-    req.logout()
-    res.json({ ok: true })
-  })
-
-  app.post(
-    '/auth/register',
-    async function regUser (req, res, next) {
-      try {
-        const schema = Joi.object().keys({
-          name: Joi.string()
-            .alphanum()
-            .min(3)
-            .required(),
-          phone: Joi.string()
-            .regex(/^(\+88|0088)?01[5-9]\d{8}$/)
-            .required(),
-          email: Joi.string()
-            .email()
-            .required(),
-          username: Joi.string()
-            .lowercase()
-            .regex(/^[a-z][^\s]{4,}$/)
-            .required(),
-          password: Joi.string()
-            .required()
-            .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/)
-            .required(),
-          dateReg: Joi.string()
-            .regex(/^(\d{6}|\d{8})$/)
-            .default(() => DateTime.local().toFormat('yyyyLLdd')),
-          admin: Joi.boolean().default(false),
-          business: Joi.object()
-            .keys({
-              address: Joi.string(),
-              name: Joi.string(),
-              phone: Joi.string().regex(/^(\+88|0088)?0(1[5-9]|2)\d{8}$/)
-            })
-            .requiredKeys(['address', 'name', 'phone'])
-        })
-
-        const data = await schema.validate(req.body)
-        const { docs: users } = await db.find({
-          selector: { username: data.username }
-        })
-        if (users.length > 0) {
-          return res.status(409).json({
-            ok: false,
-            error: {
-              message: 'Username already exists'
-            }
-          })
-        }
-
-        if (data.admin || data.business) {
-          req.body = { ...data }
-          req.requireAdmin = true
-          return ensureLoggedIn({ failureRedirect: '/' })(req, res, next)
-        }
-        next()
-      } catch (err) {
-        let error = err
-        if (error.isJoi) error = { message: error.details.map(e => e.message) }
-        res.status(400).json({ ok: false, error })
-      }
-    },
-    function verifyAdmin (req, res, next) {
-      if (req.requireAdmin && req.user && !req.user.admin) {
-        return res.sendStatus(403)
-      }
-      next()
-    },
-    function (req, res) {
-      db.post({ ...req.body })
-        .then(_ => {
-          if (!req.user) req.login()
-          res.json({ ok: true })
-        })
-        .catch(_ => {
-          res.status(500).json({
-            ok: false,
-            error: { message: 'Internal server error' }
-          })
-        })
+    if (data.admin || data.business) {
+      req.body = { ...data }
+      req.requireAdmin = true
+      return ensureLoggedIn({ failureRedirect: '/' })(req, res, next)
     }
-  )
+    next()
+  } catch (err) {
+    let error = err
+    if (error.isJoi) error = { message: error.details.map(e => e.message) }
+    res.status(400).json({ ok: false, error })
+  }
+}
+
+function verifyAdmin (req, res, next) {
+  if (req.requireAdmin && req.user && !req.user.admin) {
+    return res.sendStatus(403)
+  }
+  next()
+}
+
+export async function localStrategyCallback (username, password, done) {
+  try {
+    const {
+      docs: [user]
+    } = await db.find({
+      selector: { username },
+      use_index: 'users-username-idx'
+    })
+    if (!user) {
+      done(null, false, { message: 'Incorrect username' })
+      return
+    }
+
+    const passEql = await compare(password, user.password)
+    if (!passEql) {
+      done(null, false, { message: 'Incorrect password' })
+      return
+    }
+
+    done(null, {
+      ...user,
+      type: user.admin ? 'admin' : user.business ? 'partner' : 'user'
+    })
+  } catch (err) {
+    done(err)
+  }
 }
