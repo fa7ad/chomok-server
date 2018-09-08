@@ -1,56 +1,56 @@
-const path = require('path')
+import { resolve } from 'path'
 
-const PouchDB = require('pouchdb')
-const express = require('express')
+import PouchDB from 'pouchdb'
+import PouchFind from 'pouchdb-find'
 
-const logger = require('morgan')
-const bodyParser = require('body-parser')
-const session = require('express-session')
-const PouchSession = require('session-pouchdb-store')
-const passport = require('passport')
+import logger from 'morgan'
+import express from 'express'
+import session from 'express-session'
+import PouchSession from 'session-pouchdb-store'
+import { urlencoded, json } from 'body-parser'
 
-PouchDB.plugin(require('pouchdb-find'))
-const setEnv = require('./init')
-const setAuth = require('./controllers/auth')
+import passport from 'passport'
+
+import { getEnv, createUserIndex, listen, seedAdmin } from './init'
+import authenticate from './controllers/auth'
 
 const app = express()
-const env = setEnv()
+const env = getEnv()
+PouchDB.plugin(PouchFind)
 
 const createDB = name =>
-  new PouchDB(path.resolve(env.cwd, 'db', env.db_prefix.concat(name)))
+  new PouchDB(resolve(env.cwd, 'db', env.db_prefix.concat(name)))
 
-const DB = {
+const Data = {
   users: createDB('users'),
   offers: createDB('offers')
 }
-
-setAuth(app, DB.users)
 
 app.use(logger('dev'))
 app.use(
   session({
     secret: 'monkey 13',
     rolling: true,
-    cookie: {
-      secure: env.prod
-    },
-    store: new PouchSession(createDB('sessions'))
+    resave: true,
+    saveUninitialized: false,
+    store: new PouchSession()
   })
 )
+app.use(urlencoded({ limit: '5mb', extended: true }))
+app.use(json({ limit: '5mb', extended: true }))
+
 app.use(passport.initialize())
 app.use(passport.session())
-app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }))
-app.use(bodyParser.json({ limit: '5mb', extended: true }))
+authenticate(app, Data.users, passport)
 
-DB.users
-  .createIndex({
-    index: {
-      fields: ['username'],
-      ddoc: 'users-username-idx'
-    }
-  })
-  .then(_ =>
-    app.listen(env.port, function () {
-      console.log(`Listening on http://localhost:${env.port}`)
-    })
+Data.users
+  .get('0a0b1a1b')
+  .then(
+    _ => console.log(`Admin: admin:s3cure3`),
+    _ => seedAdmin(Data.users).then(_ => console.log(`Admin: admin:s3cure3`))
   )
+
+createUserIndex(Data.users)
+  .then(_ => listen(app, env.port))
+  .then(_ => console.log(`Listening on http://localhost:${env.port}`))
+  .catch(console.error)

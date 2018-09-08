@@ -1,32 +1,41 @@
 const Joi = require('joi')
 const bcrypt = require('bcrypt')
-const passport = require('passport')
 const { Strategy: LocalStrategy } = require('passport-local')
 const { DateTime } = require('luxon')
 const { ensureLoggedIn } = require('connect-ensure-login')
 
-module.exports = function (app, db) {
+module.exports = function (app, db, passport) {
   passport.use(
-    new LocalStrategy(async function (username, password, done) {
-      try {
-        const { docs } = await db.find({
-          selector: { username },
-          use_index: 'users-username-idx'
-        })
-        const [user] = docs
+    'local',
+    new LocalStrategy(
+      {
+        usernameField: 'username',
+        passwordField: 'password'
+      },
+      async function (username, password, done) {
+        try {
+          const {
+            docs: [user]
+          } = await db.find({
+            selector: { username },
+            use_index: 'users-username-idx'
+          })
+          if (!user) return done(null, false, { message: 'Incorrect username' })
 
-        if (!user) return done(null, false, { message: 'Incorrect username' })
+          const correct = await bcrypt.compare(password, user.password)
+          if (!correct) {
+            return done(null, false, { message: 'Incorrect password' })
+          }
 
-        const correct = await bcrypt.compare(password, user.password)
-        if (!correct) {
-          return done(null, false, { message: 'Incorrect password' })
+          return done(null, {
+            ...user,
+            type: user.admin ? 'admin' : user.business ? 'partner' : 'user'
+          })
+        } catch (err) {
+          return done(err)
         }
-
-        return done(null, user)
-      } catch (err) {
-        return done(err)
       }
-    })
+    )
   )
 
   passport.serializeUser(function (user, done) {
@@ -40,10 +49,17 @@ module.exports = function (app, db) {
   app.post(
     '/auth/login',
     passport.authenticate('local', {
-      successRedirect: '/',
-      failureRedirect: '/auth/login'
-    })
+      failureMessage: true
+    }),
+    function (req, res) {
+      res.json({ ok: true, id: req.user._id })
+    }
   )
+
+  app.get('/auth/logout', function (req, res) {
+    req.logout()
+    res.json({ ok: true })
+  })
 
   app.post(
     '/auth/register',
