@@ -1,41 +1,32 @@
 import { Router } from 'express'
 
 import { DateTime } from 'luxon'
-import { object, string, boolean } from 'joi'
+import Joi from 'joi'
 
-import { compare } from 'bcrypt'
-import { ensureLoggedIn } from 'connect-ensure-login'
+import { compare, hash } from 'bcrypt'
 import passport from 'passport'
 
-import { dbs } from '../lib/init'
+import { dbs, createUserIndex } from '../lib/init'
 const db = dbs.users
 
 // Define routes under /auth
 const route = Router()
 
-route.post('/register', regUser, verifyAdmin, function (req, res) {
+route.post('/register', regUser, function (req, res) {
   db.post({ ...req.body })
-    .then(_ => {
-      if (!req.user) req.login()
-      res.json({ ok: true })
-    })
-    .catch(_ => {
+    .then(_ => createUserIndex(db))
+    .then(_ => res.json({ ok: true }))
+    .catch(_ =>
       res.status(500).json({
         ok: false,
         error: { message: 'Internal server error' }
       })
-    })
+    )
 })
 
-route.post(
-  '/login',
-  passport.authenticate('local', {
-    failureMessage: true
-  }),
-  function (req, res) {
-    res.json({ ok: true, id: req.user._id })
-  }
-)
+route.post('/login', passport.authenticate('local', {}), function (req, res) {
+  res.json({ ok: true, id: req.user._id })
+})
 
 route.get('/loggedIn', (req, res) => res.json({ ok: !!req.user }))
 
@@ -48,36 +39,39 @@ export default route
 
 //= Helper functions
 
-async function regUser (req, res, next) {
+export async function regUser (req, res, next) {
   try {
-    const schema = object().keys({
-      name: string()
-        .alphanum()
+    const schema = Joi.object().keys({
+      name: Joi.string()
+        .regex(/^[a-zA-z\s]+$/)
         .min(3)
         .required(),
-      phone: string()
+      phone: Joi.string()
         .regex(/^(\+88|0088)?01[5-9]\d{8}$/)
         .required(),
-      email: string()
+      email: Joi.string()
         .email()
         .required(),
-      username: string()
+      username: Joi.string()
         .lowercase()
         .regex(/^[a-z][^\s]{4,}$/)
         .required(),
-      password: string()
+      password: Joi.string()
         .required()
         .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/)
         .required(),
-      dateReg: string()
+      dateReg: Joi.string()
         .regex(/^(\d{6}|\d{8})$/)
-        .default(() => DateTime.local().toFormat('yyyyLLdd')),
-      admin: boolean().default(false),
-      business: object()
+        .default(
+          () => DateTime.local().toFormat('yyyyLLdd'),
+          'Current date is default'
+        ),
+      admin: Joi.boolean().default(false),
+      business: Joi.object()
         .keys({
-          address: string(),
-          name: string(),
-          phone: string().regex(/^(\+88|0088)?0(1[5-9]|2)\d{8}$/)
+          address: Joi.string(),
+          name: Joi.string(),
+          phone: Joi.string().regex(/^(\+88|0088)?0(1[5-9]|2)\d{8}$/)
         })
         .requiredKeys(['address', 'name', 'phone'])
     })
@@ -95,24 +89,25 @@ async function regUser (req, res, next) {
       })
     }
 
+    req.body = Object.assign({}, data, {
+      password: await hash(data.password, 10)
+    })
     if (data.admin || data.business) {
-      req.body = { ...data }
-      req.requireAdmin = true
-      return ensureLoggedIn({ failureRedirect: '/' })(req, res, next)
+      return verifyAdmin(req, res, next)
     }
     next()
   } catch (err) {
     let error = err
-    if (error.isJoi) error = { message: error.details.map(e => e.message) }
+    if (error.isJoi) error = { message: err.details.map(e => e.message) }
     res.status(400).json({ ok: false, error })
   }
 }
 
-function verifyAdmin (req, res, next) {
-  if (req.requireAdmin && req.user && !req.user.admin) {
-    return res.sendStatus(403)
-  }
-  next()
+export function verifyAdmin (req, res, next) {
+  if (req.user && req.user.admin) return next()
+  return res
+    .status(!req.user ? 401 : 403)
+    .json({ ok: true, error: { message: 'Only admin can access this data' } })
 }
 
 export async function localStrategyCallback (username, password, done) {

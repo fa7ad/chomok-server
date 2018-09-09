@@ -10,7 +10,8 @@ import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
 
 import { env, listen, dbs, prepUser } from './lib/init'
-import authentication, { localStrategyCallback } from './controllers/auth'
+import authController, { localStrategyCallback, verifyAdmin } from './controllers/auth'
+import usersController from './controllers/users'
 
 const app = express()
 
@@ -44,7 +45,8 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(dbs.users.get)
 
-app.use('/auth', authentication)
+app.use('/auth', authController)
+app.use('/users', verifyAdmin, usersController)
 
 prepUser(dbs.users)
   .then(_ => listen(app, env.port))
