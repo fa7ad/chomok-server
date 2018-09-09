@@ -1,9 +1,8 @@
 import { omit, compose, prop, map } from 'ramda'
 import { Router } from 'express'
 
-import { dbs } from '../lib/init'
-import { regUser } from './auth'
-const { users } = dbs
+import { usersdb } from '../lib/utils'
+import { regUser } from '../lib/middleware'
 
 const userType = {
   undefined: u => u.username && !u.admin && !u.business,
@@ -26,7 +25,7 @@ const route = Router()
 route.get('/:type?', async (req, res) => {
   try {
     const { type } = req.params
-    const data = await users.allDocs({ include_docs: true }).then(cleandocs)
+    const data = await usersdb.allDocs({ include_docs: true }).then(cleandocs)
     const usersOfType = data.filter(userType[type])
     res.json({ ok: true, data: usersOfType })
   } catch (e) {
@@ -36,29 +35,16 @@ route.get('/:type?', async (req, res) => {
   }
 })
 
-route.post(
-  '/:type?',
-  (req, res, next) => {
-    if (req.params.type === 'admin') {
-      Object.assign(req.body, { admin: true, business: undefined })
-    } else if (req.params.type === 'partner') {
-      Object.assign(req.body, { admin: false })
-    }
-    next()
-  },
-  regUser,
-  (req, res) =>
-    users
-      .post({ ...req.body })
-      .then(_ => {
-        res.json({ ok: true })
+route.post('/:type?', regUser, (req, res) =>
+  usersdb
+    .post(req.body)
+    .then(_ => res.json({ ok: true }))
+    .catch(_ =>
+      res.status(500).json({
+        ok: false,
+        error: { message: 'Internal server error' }
       })
-      .catch(_ => {
-        res.status(500).json({
-          ok: false,
-          error: { message: 'Internal server error' }
-        })
-      })
+    )
 )
 
 export default route

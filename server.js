@@ -9,9 +9,12 @@ import { urlencoded, json } from 'body-parser'
 import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
 
-import { env, listen, dbs, prepUser } from './lib/init'
-import authController, { localStrategyCallback, verifyAdmin } from './controllers/auth'
+import authController from './controllers/auth'
 import usersController from './controllers/users'
+import zonesController from './controllers/zones'
+
+import { env, listen, usersdb, prepUser } from './lib/utils'
+import { localStrategyCallback, verifyAdmin } from './lib/middleware'
 
 const app = express()
 
@@ -43,12 +46,13 @@ passport.serializeUser(function (user, done) {
   done(null, user._id)
 })
 
-passport.deserializeUser(dbs.users.get)
+passport.deserializeUser(usersdb.get)
 
 app.use('/auth', authController)
 app.use('/users', verifyAdmin, usersController)
+app.use('/zone', zonesController)
 
-prepUser(dbs.users)
-  .then(_ => listen(app, env.port))
+prepUser(usersdb)
+  .then(listen(app, env.port))
   .then(_ => console.log(`Listening on http://localhost:${env.port}`))
   .catch(console.error)
