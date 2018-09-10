@@ -12,6 +12,7 @@ import { Strategy as LocalStrategy } from 'passport-local'
 import authController from './controllers/auth'
 import usersController from './controllers/users'
 import zonesController from './controllers/zones'
+import offersController from './controllers/offers'
 
 import { env, listen, usersdb, prepUser } from './lib/utils'
 import { localStrategyCallback, verifyAdmin } from './lib/middleware'
@@ -50,7 +51,8 @@ passport.deserializeUser(usersdb.get)
 
 app.use('/auth', authController)
 app.use('/users', verifyAdmin, usersController)
-app.use('/zone', zonesController)
+app.use('/zones', zonesController)
+app.use('/offers', offersController)
 
 prepUser(usersdb)
   .then(listen(app, env.port))

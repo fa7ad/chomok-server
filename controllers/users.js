@@ -1,7 +1,7 @@
-import { omit, compose, prop, map } from 'ramda'
+import { omit, compose, map } from 'ramda'
 import { Router } from 'express'
 
-import { usersdb } from '../lib/utils'
+import { usersdb, cleandocs } from '../lib/utils'
 import { regUser } from '../lib/middleware'
 
 const userType = {
@@ -11,21 +11,16 @@ const userType = {
   admin: u => u.username && u.admin && !u.business
 }
 
-const cleandocs = compose(
-  map(
-    compose(
-      omit(['password']),
-      prop('doc')
-    )
-  ),
-  prop('rows')
-)
-
 const route = Router()
 route.get('/:type?', async (req, res) => {
   try {
     const { type } = req.params
-    const data = await usersdb.allDocs({ include_docs: true }).then(cleandocs)
+    const data = await usersdb.allDocs({ include_docs: true }).then(
+      compose(
+        map(omit(['password'])),
+        cleandocs
+      )
+    )
     const usersOfType = data.filter(userType[type])
     res.json({ ok: true, data: usersOfType })
   } catch (e) {
