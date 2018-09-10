@@ -15,7 +15,11 @@ import zonesController from './controllers/zones'
 import offersController from './controllers/offers'
 
 import { env, listen, usersdb, prepUser } from './lib/utils'
-import { localStrategyCallback, verifyAdmin } from './lib/middleware'
+import {
+  localStrategyCallback,
+  verifyAdmin,
+  verifyLogin
+} from './lib/middleware'
 
 const app = express()
 
@@ -52,7 +56,7 @@ passport.deserializeUser(usersdb.get)
 app.use('/auth', authController)
 app.use('/users', verifyAdmin, usersController)
 app.use('/zones', zonesController)
-app.use('/offers', offersController)
+app.use('/offers', verifyLogin, offersController)
 
 prepUser(usersdb)
   .then(listen(app, env.port))

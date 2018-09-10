@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import Joi from 'joi'
 
-export const userSchema = Joi.object().keys({
+const userSchema = Joi.object().keys({
   name: Joi.string()
     .regex(/^[a-zA-z\s]+$/)
     .min(3)
@@ -34,9 +34,10 @@ export const userSchema = Joi.object().keys({
       phone: Joi.string().regex(/^(\+88|0088)?0(1[5-9]|2)\d{8}$/)
     })
     .requiredKeys(['address', 'name', 'phone']),
-  type: Joi.string()
-    .default(
-      ctx => (ctx.admin ? 'admin' : ctx.business ? 'partner' : 'user'),
-      'derived user type'
-    )
+  type: Joi.string().default(
+    ctx => (ctx.admin ? 'admin' : ctx.business ? 'partner' : 'user'),
+    'derived user type'
+  )
 })
+
+export default userSchema
