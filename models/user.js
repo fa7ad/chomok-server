@@ -1,5 +1,5 @@
-import { DateTime } from 'luxon'
 import Joi from 'joi'
+import { getLocalDate } from '../lib/utils'
 
 const userSchema = Joi.object().keys({
   name: Joi.string()
@@ -21,11 +21,8 @@ const userSchema = Joi.object().keys({
     .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/)
     .required(),
   dateReg: Joi.string()
-    .regex(/^(\d{6}|\d{8})$/)
-    .default(
-      () => DateTime.local().toFormat('yyyyLLdd'),
-      'defaults to local date'
-    ),
+    .regex(/^\d{8}$/)
+    .default(getLocalDate, 'Registration date'),
   admin: Joi.boolean().default(false),
   business: Joi.object()
     .keys({

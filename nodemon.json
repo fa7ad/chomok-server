@@ -3,6 +3,6 @@
     "NODE_ENV": "development",
     "CWD": "."
   },
-  "exec": "npx babel-node server.js",
+  "exec": "npm start",
   "ext": "js"
 }
