@@ -34,7 +34,7 @@ app.use(
     saveUninitialized: false,
     store: new PouchSession(),
     cookie: {
-      maxAge: 30e3,
+      maxAge: 6e4,
       secure: env.prod
     }
   })

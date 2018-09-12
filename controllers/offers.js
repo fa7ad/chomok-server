@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { map, toLower, omit } from 'ramda'
+import { map, toLower, omit, merge } from 'ramda'
 
 import offerSchema from '../models/offer'
 import { verifyAdmin } from '../lib/middleware'
@@ -25,7 +25,7 @@ route.get('/', verifyAdmin, async (req, res) => {
   }
 })
 
-route.get('/:division/:zone', async (req, res) => {
+route.get('/:division/:name', async (req, res) => {
   const isUser = req.user.type === 'user'
   const params = map(toLower, req.params)
   try {
@@ -35,7 +35,10 @@ route.get('/:division/:zone', async (req, res) => {
 
     const zoneid = zone._id
     const allOffers = onlyDocs(await offersdb.allDocs({ include_docs: true }))
-    const matches = findAllLike({ zoneid, date: getLocalDate() }, allOffers)
+    const matches = findAllLike(
+      merge({ zoneid }, isUser ? { date: getLocalDate() } : {}),
+      allOffers
+    )
     const authorize = map(omit(isUser ? ['reqBy', 'useBy'] : []))
     res.json({ ok: true, data: authorize(matches) })
   } catch (e) {

@@ -15,7 +15,7 @@ route.get('/:type?', async (req, res) => {
         return [].concat(users, omit(['password'], user))
       }
       return users
-    })
+    }, [])
     res.json({ ok: true, data: onlyOfType(rows) })
   } catch (e) {
     res

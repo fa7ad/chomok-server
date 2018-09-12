@@ -30,6 +30,7 @@
     "passport-local": "^1.0.0",
     "pouchdb": "^7.0.0",
     "pouchdb-find": "^7.0.0",
+    "qrcode": "^1.2.2",
     "ramda": "^0.25.0",
     "session-pouchdb-store": "^0.2.1",
     "shortid": "^2.2.13"
