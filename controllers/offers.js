@@ -8,6 +8,7 @@ import {
   offersdb,
   onlyDocs,
   errorify,
+  toBase64,
   findLike,
   findAllLike,
   getLocalDate,
@@ -50,7 +51,10 @@ route.get('/:division/:name', async (req, res) => {
 route.post('/', verifyAdmin, async (req, res) => {
   try {
     const data = await offerSchema.validate(req.body)
-    const rep = await offersdb.post(data)
+    const rep = await offersdb.put({
+      _id: data.zoneid.concat('_', toBase64(data.date)),
+      ...data
+    })
     if (!rep) throw new HTTPError(500, 'Internal server error')
     res.json({ ok: true })
   } catch (e) {
