@@ -13,6 +13,7 @@ import authController from './controllers/auth'
 import usersController from './controllers/users'
 import zonesController from './controllers/zones'
 import offersController from './controllers/offers'
+import codesController from './controllers/codes'
 
 import { env, listen, usersdb, prepUser } from './lib/utils'
 import {
@@ -53,10 +54,11 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(usersdb.get)
 
-app.use('/auth', authController)
-app.use('/users', verifyAdmin, usersController)
-app.use('/zones', zonesController)
-app.use('/offers', verifyLogin, offersController)
+app.use('/api', authController)
+app.use('/api/users', verifyAdmin, usersController)
+app.use('/api/zones', zonesController)
+app.use('/api/offers', offersController)
+app.use('/api/codes', verifyLogin, codesController)
 
 prepUser(usersdb)
   .then(listen(app, env.port))
