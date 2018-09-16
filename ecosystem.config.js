@@ -13,7 +13,8 @@ module.exports = {
         PORT: 3003,
         DB_PREFIX: 'chomok_',
         CWD: '/home/node-www/chomox-server'
-      }
+      },
+      node_args: ['-r', 'esm']
     }
   ]
 }
