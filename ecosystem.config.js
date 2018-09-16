@@ -4,17 +4,13 @@ module.exports = {
       name: 'Chomok-server',
       script: 'server.js',
       env: {
-        NODE_ENV: 'development',
-        PORT: 3333,
-        DB_PREFIX: 'chomok_'
-      },
-      env_production: {
         NODE_ENV: 'production',
         PORT: 3003,
         DB_PREFIX: 'chomok_',
-        CWD: '/home/node-www/chomox-server'
+        CWD: '/home/node-www/chomok-server'
       },
-      node_args: ['-r', 'esm']
+      node_args: ['-r', 'esm'],
+      exec_mode: 'fork'
     }
   ]
 }
