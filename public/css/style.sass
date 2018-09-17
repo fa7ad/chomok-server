@@ -1,0 +1,380 @@
+// Utils
+p.clear
+  clear: both
+.learnMoreBtn
+  width: 200px
+  color: white
+  height: 40px
+  text-transform: uppercase
+  border: 1px solid white
+  font-family: "Roboto", sans-serif
+  letter-spacing: 1.5pt
+  text-decoration: none
+  padding: 1em
+  font-size: 10pt
+  transition: all 0.3s ease-out
+  background:
+    image: url('../img/learnMoreBG.png')
+    repeat: no-repeat
+    position: 0 0
+    size: 100% 0
+  &:hover
+    text-decoration: none
+    color: rgba(22,22,22,1)
+    background:
+      size: 100% 100%
+.pushLeft
+  margin-left: -50%
+  @media screen and (max-width: 720px)
+    margin-left: -100%
+.pushRight
+  margin-left: 0
+.dimmer
+  height: 100%
+  width: 100%
+  z-index: 110
+  position: absolute
+  background: rgba(0,0,0,0.5)
+  display: none
+.notification
+  display: none
+  top: 50%
+  transform: translateY(-50%)
+  left: calc(50% - 150px)
+  position: absolute
+  background: white
+  border-radius: 5px 
+  width: 300px
+  z-index: 120
+  padding: 5px
+  h5
+    text-align: center
+    font-family: Montserrat
+    text-transform: uppercase
+    letter-spacing: 1pt
+    font-size: 9pt
+  img
+    display: none
+  .closeNotification
+    display: block
+    text-align: right
+    i
+      color: #222
+      cursor: pointer
+.wrapper
+  width: 90%
+  margin: 0 auto
+.user
+  text-align: right
+  position: absolute
+  right: 0
+  top: 0
+  z-index: 100
+  padding: 7px
+  .username
+    float: right
+    height: 40px
+    color: white
+    font-family: Montserrat
+    font-size: 10pt
+    letter-spacing: 1pt
+    text-transform: uppercase
+    padding-top: 12px
+    padding-right: 5px
+  .userIcon
+    float: right
+    width: 40px
+    height: 40px
+    cursor: pointer
+    z-index: 120
+    img
+      width: 100%
+      transition: 0.4s ease-in
+      &:hover
+        transform: scale(1.04)
+  .dropdown
+    display: none
+    background: white
+    border-radius: 12px
+    width: 200px
+    box-shadow: 0 0 3px rgba(0,0,0,0.2)
+    ul li
+      cursor: pointer
+      list-style-type: none
+      text-decoration: none
+      text-transform: uppercase
+      text-align: center
+      font-family: Montserrat
+      letter-spacing: 1pt
+      font-size: 10pt
+      padding: 5px 0
+      font-weight: thin
+      border-bottom: 1px solid rgba(0,0,0,0.15)
+      a
+        text-decoration: none
+        color: #222
+        &:hover
+          text-decoration: none
+          color: #222
+    ul li:last-child
+      border-bottom: 0px 
+
+
+// Page styles
+* 
+  margin: 0
+  padding: 0
+
+body, html
+  width: 100%
+  height: 100%  
+  margin: 0
+  padding: 0
+
+body
+  background:
+    image: url('../img/background.jpg')
+    repeat: no-repeat
+    size: cover
+    attachment: fixed
+    position: center
+  .branding
+    padding: 7px
+    width: 100%
+    height: 100%
+    max-width: 70px
+    max-height: 70px
+    position: absolute
+    top: 0
+    left: calc(50% - 42px)
+    z-index: 100
+    transition: 0.2s ease-in
+    &:hover
+      transform: scale(1.04)
+    img
+      width: 100%
+  .hamMenu
+    padding: 5px
+    width: 100%
+    height: 100%
+    max-height: 20px
+    max-width: 20px
+    position: absolute
+    top: 0
+    left: 0
+    z-index: 100
+    transition: 0.6s ease-in
+    #hamIcon
+      cursor: pointer
+      font-size: 22px
+      transition: 0.6s ease-in
+  .sidePanel
+    position: absolute
+    background: rgb(0, 148, 162)
+    height: 100%
+    width: 300px
+    z-index: 101
+    top: 0
+    left: -300px
+    transition: 0.6s ease-in
+    ul 
+      height: 100%
+      width: 100%
+      li
+        text-align: center
+        padding: 1.5em 0
+        a
+          font-family: "Montserrat"
+          text-transform: uppercase
+          letter-spacing: 1pt
+          font-weight: thin
+          font-size: 12pt
+          text-decoration: none
+          color: white
+  #backArrow
+    display: none
+    position: absolute
+    font-size: 40px
+    color: rgba(255,255,255,0.65)
+    transition: 0.3s ease-in
+    z-index: 50
+    left: 10px
+    top: 50%
+    &:hover
+      transform: scale(1.04)
+      color: rgba(255,255,255,1)
+  .container 
+    height: 100%
+    overflow: hidden
+    @media screen and (max-width: 720px)
+      width: 100%
+    .box
+      width: 50%
+      height: 100%
+      float: left
+      transition: 0.6s ease-in
+      @media screen and (max-width: 720px)
+        width: 100%
+    .zones
+      display: flex
+      align-items: center
+      ul#navigation
+        width: 70%
+        margin: 0 auto
+        display: grid
+        grid-template: "a a a a . . . .""a a a a b b b b""c c c c b b b b""c c c c d d d d""e e e e d d d d""e e e e f f f f""g g g g f f f f""g g g g h h h h""i i i i h h h h""i i i i j j j j""k k k k j j j j""k k k k . . . ."
+        li
+          text-decoration: none
+          padding: 10px
+          background: rgb(22,22,22)
+          text-align: center
+          list-style-type: none
+          display: inline-block
+          clip-path: polygon(95% 0, 100% 50%, 95% 100%, 5% 100%, 0 50%, 5% 0)
+          margin-top: 3px 
+          transition: 0.3s ease-in
+          &:hover
+            box-shadow: 0 0 10px rgb(10,5,6)
+            cursor: pointer
+            transform: scale(1.04)
+          a
+            text-decoration: none
+            color: white
+            text-transform: uppercase
+            font-family: "Montserrat", sans-serif
+            font-size: 11pt
+            letter-spacing: 1pt
+            font-weight: 500
+        li:nth-child(1)
+          grid-area: a
+        li:nth-child(2)
+          grid-area: b
+        li:nth-child(3)
+          grid-area: c
+        li:nth-child(4)
+          grid-area: d
+        li:nth-child(5)
+          grid-area: e
+        li:nth-child(6)
+          grid-area: f
+        li:nth-child(7)
+          grid-area: g
+        li:nth-child(8)
+          grid-area: h
+        li:nth-child(9)
+          grid-area: i
+        li:nth-child(10)
+          grid-area: j
+        li:nth-child(11)
+          grid-area: k
+        li:nth-child(3n)
+          background-color: rgba(0,0,0,0)
+          cursor: default
+        li:nth-child(2n)
+          margin-left: -4%
+    .about
+      background: rgba(0,0,0,0.4)
+      transition: background-color 0.4s ease-in
+      text-align: center
+      &:hover
+        background: rgba(0,0,0,0.7)
+      #preGeo
+        height: 100%
+        width: 100%
+        display: flex
+        align-items: center
+        text-align: center
+        h2
+          text-transform: uppercase
+          font-family: "Archivo Black", sans-serif
+          width: 80%
+          text-align: center
+          margin: 0 auto
+          font-size: 3em
+          color: rgba(255,255,255,1)
+        p
+          display: block
+          width: 70%
+          margin: 0 auto
+          margin-top: 1em
+          color: white
+          font-family: "Montserrat", sans-serif
+          text-transform: uppercase
+          font-size: 8pt
+          letter-spacing: 1pt
+          margin-bottom: 3em
+          margin-top: 1.5em
+      #postGeo
+        width: 100%
+        height: 100%
+        @media screen and (max-width: 720px)
+          height: calc(100% - 84px)
+          margin-top: 84px
+        p.geo
+          color: white
+          text-align: center
+          font-family: Montserrat
+          text-transform: uppercase
+          font-size: 11pt
+          letter-spacing: 1pt
+          padding: 5px
+          #geoLocation
+            padding-left: 5px
+        .offer
+          .imgHolder
+            width: 60%
+            max-width: 300px
+            margin: 0 auto
+            margin-top: 2em
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)
+            img
+              width: 100%
+              transition: all 0.6s ease-out
+              &:hover
+                transform: scale(1.2)
+          .wrapper
+            h2, p, div
+              font-family: Montserrat
+              font-weight: thin 
+              text-transform: uppercase
+              letter-spacing: 1pt
+              font-size: 10pt
+              color: white
+            h3.offerTerms
+              font-family: Montserrat
+              font-weight: 300 
+              text-transform: uppercase
+              letter-spacing: 1pt
+              font-size: 10pt
+              color: white
+              padding: 10px
+    .roulette
+      text-align: cetner 
+      .wheelHolder
+        width: 60%
+        margin: 0 auto
+        margin-top: 84px
+        text-align: center
+        .picker
+          z-index: 50
+          font-size: 2em
+          color: #e74c3c
+          position: relative
+          bottom: -0.75em
+        img
+          width: 100%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Chomok! - Get your free Chomok of the day!</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Archivo+Black|Montserrat|Roboto" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div class="branding">
+    <a href="index.html"><img src="img/logo.png" alt=""></a>
+  </div>
+  <div class="hamMenu">
+    <span id="hamIcon"><i class="fas fa-bars"></i></span>
+  </div>
+  <div class="sidePanel">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About us</a></li>
+      <li><a href="contact.html">Contact us</a></li>
+    </ul>
+  </div>
+  <div class="dimmer"></div>
+  <div class="notification">
+    <span class="closeNotification"><i class="fas fa-times"></i></span>
+    <img class="qr" src="" alt="">
+    <h5>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque ducimus molestias sapiente maiores. </h5>
+  </div>
+  <div class="user">
+    <div>
+      <div class="userIcon">
+        <img src="img/user.png">
+      </div>
+      <div class="username">Username</div>
+      <p class="clear"></p>
+    </div>
+    <div class="dropdown">
+      <ul>
+        <li id="accountSetting"><a href="account.html">Settings</a></li>
+        <li id="login"><a href="login.html">Login</a></li>
+        <li id="logout" class="logout">Logout</li>
+      </ul>
+    </div>
+  </div>
+  <div class="container">
+    <div class="box zones">
+      <ul id="navigation">
+        <li><a href="#" onclick="getOffer('dhanmondi')">Dhanmondi</a></li>
+        <li><a href="#" onclick="getOffer('gulshan')">Gulshan</a></li>
+        <li></li>
+        <li><a href="#" onclick="getOffer('mohammadpur')">Mohammadpur</a></li>
+        <li><a href="#" onclick="getOffer('banani')">Banani</a></li>
+        <li></li>
+        <li><a href="#" onclick="getOffer('jigatola')">Jigatola</a></li>
+      </ul>
+    </div>
+    <div class="box about">
+      <div id="preGeo">
+        <div>
+          <h2>Lorem Ipsum</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam laoreet arcu urna, et porta ipsum
+            ullamcorper vel. In blandit ultrices arcu, ac blandit ex mattis eu. Aenean malesuada luctus erat in luctus.
+            Ut ullamcorper dictum accumsan. Donec sed laoreet urna. Etiam vestibulum rutrum lacus. Maecenas risus
+            tortor, pulvinar ac finibus ut, lobortis eget justo. Fusce ultrices enim vel ipsum bibendum, sed accumsan
+            metus dictum.</p>
+          <a href="about.html" class="learnMoreBtn">Learn More!</a>
+        </div>
+      </div>
+      <div id="postGeo">
+        <span id="backArrow"><i class="fas fa-chevron-left"></i></span>
+        <p class="geo"><i class="fas fa-map-marker-alt"></i><span id="geoLocation">Dhanmondi</span></p>
+        <div class="offer">
+          <div class="imgHolder">
+            <img src="img/offer1.png" alt="">
+          </div>
+          <div class="wrapper">
+            <h3 class="offerTerms">Donec sed laoreet urna. Etiam vestibulum rutrum lacus. Maecenas risus tortor,
+              pulvinar ac finibus ut, lobortis eget justo.</h3>
+            <h2 style="margin-bottom: 20px">Spin the wheel to get your % off!</h2>
+            <a href="#" class="learnMoreBtn" id="spin">Spin The Wheel!</a>
+            <div style="margin-top: 20px">
+              <i class="fas fa-location-arrow"></i>&nbsp; GQ Cafe, Nurjahan Road, Mohammadpur Dhaka 1207
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="box roulette">
+      <div class="wheelHolder">
+        <span class="picker"><i class="fas fa-map-marker-alt"></i></span>
+        <img src="img/wheelofluck.png" alt="">
+      </div>
+    </div>
+    <p class="clear"></p>
+  </div>
+  <script src="js/script.js"></script>
+</body>
+
+</html>

@@ -1,5 +1,6 @@
-import helmet from 'helmet'
+import path from 'path'
 import cors from 'cors'
+import helmet from 'helmet'
 import logger from 'morgan'
 import express from 'express'
 import session from 'express-session'
@@ -53,6 +54,8 @@ passport.serializeUser(function (user, done) {
 })
 
 passport.deserializeUser(usersdb.get)
+
+app.use(express.static(path.resolve(env.cwd, 'public')))
 
 app.use('/api', authController)
 app.use('/api/users', verifyAdmin, usersController)

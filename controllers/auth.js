@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { pickAll, merge } from 'ramda'
 
 import passport from 'passport'
 
@@ -23,7 +24,9 @@ route.post('/login', passport.authenticate('local', {}), function (req, res) {
   res.json({ ok: true, id: req.user._id, type: req.user.type })
 })
 
-route.get('/loggedIn', (req, res) => res.json({ ok: !!req.user }))
+route.get('/loggedIn', (req, res) =>
+  res.json({ ok: !!req.user, ...pickAll(['type', 'name'], req.user || {}) })
+)
 
 route.get('/logout', function (req, res) {
   req.logout()

@@ -1,0 +1,438 @@
+p.clear {
+  clear: both; }
+
+.learnMoreBtn {
+  width: 200px;
+  color: white;
+  height: 40px;
+  text-transform: uppercase;
+  border: 1px solid white;
+  font-family: "Roboto", sans-serif;
+  letter-spacing: 1.5pt;
+  text-decoration: none;
+  padding: 1em;
+  font-size: 10pt;
+  transition: all 0.3s ease-out;
+  background-image: url("../img/learnMoreBG.png");
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 100% 0; }
+
+.learnMoreBtn:hover {
+  text-decoration: none;
+  color: #161616;
+  background-size: 100% 100%; }
+
+.pushLeft {
+  margin-left: -50%; }
+
+@media screen and (max-width: 720px) {
+  .pushLeft {
+    margin-left: -100%; } }
+
+.pushRight {
+  margin-left: 0; }
+
+.dimmer {
+  height: 100%;
+  width: 100%;
+  z-index: 110;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.5);
+  display: none; }
+
+.notification {
+  display: none;
+  top: 50%;
+  transform: translateY(-50%);
+  left: calc(50% - 150px);
+  position: absolute;
+  background: white;
+  border-radius: 5px;
+  width: 300px;
+  z-index: 120;
+  padding: 5px; }
+
+.notification h5 {
+  text-align: center;
+  font-family: Montserrat;
+  text-transform: uppercase;
+  letter-spacing: 1pt;
+  font-size: 9pt; }
+
+.notification img {
+  display: none; }
+
+.notification .closeNotification {
+  display: block;
+  text-align: right; }
+
+.notification .closeNotification i {
+  color: #222;
+  cursor: pointer; }
+
+.wrapper {
+  width: 90%;
+  margin: 0 auto; }
+
+.user {
+  text-align: right;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 100;
+  padding: 7px; }
+
+.user .username {
+  float: right;
+  height: 40px;
+  color: white;
+  font-family: Montserrat;
+  font-size: 10pt;
+  letter-spacing: 1pt;
+  text-transform: uppercase;
+  padding-top: 12px;
+  padding-right: 5px; }
+
+.user .userIcon {
+  float: right;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 120; }
+
+.user .userIcon img {
+  width: 100%;
+  transition: 0.4s ease-in; }
+
+.user .userIcon img:hover {
+  transform: scale(1.04); }
+
+.user .dropdown {
+  display: none;
+  background: white;
+  border-radius: 12px;
+  width: 200px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2); }
+
+.user .dropdown ul li {
+  cursor: pointer;
+  list-style-type: none;
+  text-decoration: none;
+  text-transform: uppercase;
+  text-align: center;
+  font-family: Montserrat;
+  letter-spacing: 1pt;
+  font-size: 10pt;
+  padding: 5px 0;
+  font-weight: thin;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15); }
+
+.user .dropdown ul li a {
+  text-decoration: none;
+  color: #222; }
+
+.user .dropdown ul li a:hover {
+  text-decoration: none;
+  color: #222; }
+
+.user .dropdown ul li:last-child {
+  border-bottom: 0px; }
+
+* {
+  margin: 0;
+  padding: 0; }
+
+body, html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0; }
+
+body {
+  background-image: url("../img/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center; }
+
+body .branding {
+  padding: 7px;
+  width: 100%;
+  height: 100%;
+  max-width: 70px;
+  max-height: 70px;
+  position: absolute;
+  top: 0;
+  left: calc(50% - 42px);
+  z-index: 100;
+  transition: 0.2s ease-in; }
+
+body .branding:hover {
+  transform: scale(1.04); }
+
+body .branding img {
+  width: 100%; }
+
+body .hamMenu {
+  padding: 5px;
+  width: 100%;
+  height: 100%;
+  max-height: 20px;
+  max-width: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  transition: 0.6s ease-in; }
+
+body .hamMenu #hamIcon {
+  cursor: pointer;
+  font-size: 22px;
+  transition: 0.6s ease-in; }
+
+body .sidePanel {
+  position: absolute;
+  background: #0094a2;
+  height: 100%;
+  width: 300px;
+  z-index: 101;
+  top: 0;
+  left: -300px;
+  transition: 0.6s ease-in; }
+
+body .sidePanel ul {
+  height: 100%;
+  width: 100%; }
+
+body .sidePanel ul li {
+  text-align: center;
+  padding: 1.5em 0; }
+
+body .sidePanel ul li a {
+  font-family: "Montserrat";
+  text-transform: uppercase;
+  letter-spacing: 1pt;
+  font-weight: thin;
+  font-size: 12pt;
+  text-decoration: none;
+  color: white; }
+
+body #backArrow {
+  display: none;
+  position: absolute;
+  font-size: 40px;
+  color: rgba(255, 255, 255, 0.65);
+  transition: 0.3s ease-in;
+  z-index: 50;
+  left: 10px;
+  top: 50%; }
+
+body #backArrow:hover {
+  transform: scale(1.04);
+  color: white; }
+
+body .container {
+  height: 100%;
+  overflow: hidden; }
+
+@media screen and (max-width: 720px) {
+  body .container {
+    width: 100%; } }
+
+body .container .box {
+  width: 50%;
+  height: 100%;
+  float: left;
+  transition: 0.6s ease-in; }
+
+@media screen and (max-width: 720px) {
+  body .container .box {
+    width: 100%; } }
+
+body .container .zones {
+  display: flex;
+  align-items: center; }
+
+body .container .zones ul#navigation {
+  width: 70%;
+  margin: 0 auto;
+  display: grid;
+  grid-template: "a a a a . . . ." "a a a a b b b b" "c c c c b b b b" "c c c c d d d d" "e e e e d d d d" "e e e e f f f f" "g g g g f f f f" "g g g g h h h h" "i i i i h h h h" "i i i i j j j j" "k k k k j j j j" "k k k k . . . ."; }
+
+body .container .zones ul#navigation li {
+  text-decoration: none;
+  padding: 10px;
+  background: #161616;
+  text-align: center;
+  list-style-type: none;
+  display: inline-block;
+  clip-path: polygon(95% 0, 100% 50%, 95% 100%, 5% 100%, 0 50%, 5% 0);
+  margin-top: 3px;
+  transition: 0.3s ease-in; }
+
+body .container .zones ul#navigation li:hover {
+  box-shadow: 0 0 10px #0a0506;
+  cursor: pointer;
+  transform: scale(1.04); }
+
+body .container .zones ul#navigation li a {
+  text-decoration: none;
+  color: white;
+  text-transform: uppercase;
+  font-family: "Montserrat", sans-serif;
+  font-size: 11pt;
+  letter-spacing: 1pt;
+  font-weight: 500; }
+
+body .container .zones ul#navigation li:nth-child(1) {
+  grid-area: a; }
+
+body .container .zones ul#navigation li:nth-child(2) {
+  grid-area: b; }
+
+body .container .zones ul#navigation li:nth-child(3) {
+  grid-area: c; }
+
+body .container .zones ul#navigation li:nth-child(4) {
+  grid-area: d; }
+
+body .container .zones ul#navigation li:nth-child(5) {
+  grid-area: e; }
+
+body .container .zones ul#navigation li:nth-child(6) {
+  grid-area: f; }
+
+body .container .zones ul#navigation li:nth-child(7) {
+  grid-area: g; }
+
+body .container .zones ul#navigation li:nth-child(8) {
+  grid-area: h; }
+
+body .container .zones ul#navigation li:nth-child(9) {
+  grid-area: i; }
+
+body .container .zones ul#navigation li:nth-child(10) {
+  grid-area: j; }
+
+body .container .zones ul#navigation li:nth-child(11) {
+  grid-area: k; }
+
+body .container .zones ul#navigation li:nth-child(3n) {
+  background-color: rgba(0, 0, 0, 0);
+  cursor: default; }
+
+body .container .zones ul#navigation li:nth-child(2n) {
+  margin-left: -4%; }
+
+body .container .about {
+  background: rgba(0, 0, 0, 0.4);
+  transition: background-color 0.4s ease-in;
+  text-align: center; }
+
+body .container .about:hover {
+  background: rgba(0, 0, 0, 0.7); }
+
+body .container .about #preGeo {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  text-align: center; }
+
+body .container .about #preGeo h2 {
+  text-transform: uppercase;
+  font-family: "Archivo Black", sans-serif;
+  width: 80%;
+  text-align: center;
+  margin: 0 auto;
+  font-size: 3em;
+  color: white; }
+
+body .container .about #preGeo p {
+  display: block;
+  width: 70%;
+  margin: 0 auto;
+  margin-top: 1em;
+  color: white;
+  font-family: "Montserrat", sans-serif;
+  text-transform: uppercase;
+  font-size: 8pt;
+  letter-spacing: 1pt;
+  margin-bottom: 3em;
+  margin-top: 1.5em; }
+
+body .container .about #postGeo {
+  width: 100%;
+  height: 100%; }
+
+@media screen and (max-width: 720px) {
+  body .container .about #postGeo {
+    height: calc(100% - 84px);
+    margin-top: 84px; } }
+
+body .container .about #postGeo p.geo {
+  color: white;
+  text-align: center;
+  font-family: Montserrat;
+  text-transform: uppercase;
+  font-size: 11pt;
+  letter-spacing: 1pt;
+  padding: 5px; }
+
+body .container .about #postGeo p.geo #geoLocation {
+  padding-left: 5px; }
+
+body .container .about #postGeo .offer .imgHolder {
+  width: 60%;
+  max-width: 300px;
+  margin: 0 auto;
+  margin-top: 2em;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+
+body .container .about #postGeo .offer .imgHolder img {
+  width: 100%;
+  transition: all 0.6s ease-out; }
+
+body .container .about #postGeo .offer .imgHolder img:hover {
+  transform: scale(1.2); }
+
+body .container .about #postGeo .offer .wrapper h2, body .container .about #postGeo .offer .wrapper p, body .container .about #postGeo .offer .wrapper div {
+  font-family: Montserrat;
+  font-weight: thin;
+  text-transform: uppercase;
+  letter-spacing: 1pt;
+  font-size: 10pt;
+  color: white; }
+
+body .container .about #postGeo .offer .wrapper h3.offerTerms {
+  font-family: Montserrat;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 1pt;
+  font-size: 10pt;
+  color: white;
+  padding: 10px; }
+
+body .container .roulette {
+  text-align: cetner; }
+
+body .container .roulette .wheelHolder {
+  width: 60%;
+  margin: 0 auto;
+  margin-top: 84px;
+  text-align: center; }
+
+body .container .roulette .wheelHolder .picker {
+  z-index: 50;
+  font-size: 2em;
+  color: #e74c3c;
+  position: relative;
+  bottom: -0.75em; }
+
+body .container .roulette .wheelHolder img {
+  width: 100%; }
+
+/*# sourceMappingURL=style.css.map */
+
+/*# sourceMappingURL=style.css.map */

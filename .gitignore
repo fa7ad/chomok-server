@@ -13,3 +13,5 @@ build
 
 db/*
 log.txt
+
+.sass-cache
