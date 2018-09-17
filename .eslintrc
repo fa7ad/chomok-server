@@ -4,5 +4,8 @@
     "jquery": true,
     "browser": true,
     "node": true
+  },
+  "globals": {
+    "axios": true
   }
 }

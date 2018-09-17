@@ -25,7 +25,7 @@ route.post('/login', passport.authenticate('local', {}), function (req, res) {
 })
 
 route.get('/loggedIn', (req, res) =>
-  res.json({ ok: !!req.user, ...pickAll(['type', 'name'], req.user || {}) })
+  res.json({ ok: !!req.user, ...pickAll(['type', 'username'], req.user || {}) })
 )
 
 route.get('/logout', function (req, res) {

@@ -8,36 +8,24 @@ function capitalize (lower) {
 
 $(document).ready(() => {
   // Check Log in
-  const root = window.location.origin
-  // $.ajax({
-  //   method: 'GET',
-  //   url: root + '/api/loggedIn',
-  //   success: data => {
-  //     console.log(data)
-  //     if (data.ok) {
-  //     } else {
-  //     }
-  //   }
-  // })
-  $.getJSON('/api/loggedIn')
-    .done(data => {
-      if (data.ok) {
-        // logged in
-        $('#login').hide()
-        $('#accountSetting').show()
-        $('#logout').show()
-        // show username
-        if (data.type === 'admin') {
-          window.location.replace('/admin')
-        } else if (data.type === 'partner') {
-          window.location.replace('/partner')
-        } else {
-          $('.username')[0].innerHTML = data.username
-        }
-      } else throw new Error('not logged in')
+  axios
+    .get('/api/loggedIn')
+    .then(function (data) {
+      if (!data.ok) throw new Error('Not logged in!')
+      // logged in
+      $('#login').hide()
+      $('#accountSetting').show()
+      $('#logout').show()
+      // show username
+      if (data.type === 'admin') {
+        window.location.replace('/admin')
+      } else if (data.type === 'partner') {
+        window.location.replace('/partner')
+      } else {
+        $('.username').html(data.username)
+      }
     })
-    .fail(e => {
-      // not logged in
+    .catch(function () {
       $('#login').show()
       $('#accountSetting').hide()
       $('#logout').hide()
@@ -45,37 +33,31 @@ $(document).ready(() => {
     })
 
   // Get zones
-  $.ajax({
-    method: 'GET',
-    url: root + '/api/zones',
-    success: data => {
-      console.log(data)
-      let i = 1
-      if (data.data.length !== 0) {
-        $('.navigation')[0].empty()
-      }
-      for (x in data.data) {
-        if (i % 3 === 0) {
-          $('.navigation')[0].append('<li></li>')
-          $('.navigation')[0].append(
-            '<li><a href="#" onclick="getOffer(\'' +
-              data.data[x].name +
-              '\')">' +
-              capitalize(data.data[x].name) +
-              '</a></li>'
-          )
-        } else {
-          $('.navigation')[0].append(
-            '<li><a href="#" onclick="getOffer(\'' +
-              data.data[x].name +
-              '\')">' +
-              capitalize(data.data[x].name) +
-              '</a></li>'
-          )
+  axios
+    .get('/api/zones')
+    .then(function (resp) {
+      const nav = document.querySelector('#navigation')
+      resp.data = Array.prototype.slice.call(resp.data)
+      if (resp.data.length < 1) return false
+      resp.data.forEach(function (zone, idx) {
+        if (idx % 3 === 0) {
+          const dummy = document.createElement('li')
+          nav.appendChild(dummy)
         }
-      }
-    }
-  })
+        const li = document.createElement('li')
+        const a = document.createElement('a')
+        a.setAttribute('href', '#')
+        a.addEventListener('click', function (e) {
+          getOffer(zone.name)
+        })
+        a.innerHTML = capitalize(zone.name)
+        li.appendChild(a)
+        nav.appendChild(li)
+      })
+    })
+    .catch(function (err) {
+      console.error(err)
+    })
 
   // Navigation Menu
   $('#hamIcon').click(() => {
