@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { map, toLower, omit, filter, propEq } from 'ramda'
+import { map, toLower, omit, filter, propEq, prop, compose, merge } from 'ramda'
 
 import offerSchema from '../models/offer'
 import { verifyAdmin, verifyLogin } from '../lib/middleware'
@@ -10,9 +10,9 @@ import {
   errorify,
   toBase64,
   findLike,
-  findAllLike,
   getLocalDate,
-  HTTPError
+  HTTPError,
+  usersdb
 } from '../lib/utils'
 
 const route = Router()
@@ -46,9 +46,15 @@ route.get('/:division/:name', async (req, res) => {
 
     const zoneid = zone._id
     const allOffers = onlyDocs(await offersdb.allDocs({ include_docs: true }))
-    const matches = findAllLike({ zoneid, date: getLocalDate() }, allOffers)
-    const cleanup = map(omit(['reqBy', 'useBy']))
-    res.json({ ok: true, data: cleanup(matches) })
+    const match = findLike({ zoneid, date: getLocalDate() }, allOffers)
+    const partner = prop('business')(await usersdb.get(match.partnerid))
+    if (!partner) throw new HTTPError(500, 'Not a valid offer')
+
+    const cleanup = compose(
+      merge({ partner }),
+      omit(['reqBy', 'useBy'])
+    )
+    res.json({ ok: true, data: cleanup(match) })
   } catch (e) {
     const { status, error } = errorify(e)
     res.status(status).json({ ok: false, error })
