@@ -19,7 +19,6 @@ const route = Router()
 
 route.get('/', verifyLogin, async (req, res) => {
   const { type } = req.user
-  console.log(req.user)
   try {
     if (!/^(partner|admin)$/.test(type)) {
       throw new HTTPError(403, 'Not allowed')
