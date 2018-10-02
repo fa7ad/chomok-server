@@ -38,12 +38,11 @@ app.use(
     resave: true,
     saveUninitialized: true,
     store: new MemorySession({
-      checkPeriod: 86400000 // prune expired entries every 24h
+      checkPeriod: 86400000
     }),
-    proxy: true,
+    proxy: env.prod,
     cookie: {
-      maxAge: 6e4,
-      secure: true
+      maxAge: 6e4
     }
   })
 )
