@@ -48,4 +48,16 @@ route.get('/:div', async (req, res) => {
   }
 })
 
+route.delete('/:id', verifyAdmin, async (req, res) => {
+  try {
+    const data = await zonesdb.get(req.params.id)
+    const rep = await zonesdb.remove(data)
+    if (!rep) throw new HTTPError(500, 'Internal server error')
+    res.json({ ok: true })
+  } catch (e) {
+    const { error, status } = errorify(e)
+    res.status(status).json({ ok: false, error })
+  }
+})
+
 export default route

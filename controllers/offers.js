@@ -26,9 +26,16 @@ route.get('/', verifyLogin, async (req, res) => {
     const onlyTheir = filter(propEq('partnerid', req.user._id))
     const data = onlyDocs(await offersdb.allDocs({ include_docs: true }))
     if (!data) throw new HTTPError(404, 'No offers found')
+    const dataPart = await Promise.all(
+      data.map(async doc => {
+        const partner = prop('business')(await usersdb.get(doc.partnerid))
+        const zone = await zonesdb.get(doc.zoneid)
+        return { partner, zone, ...doc }
+      })
+    )
     res.json({
       ok: true,
-      data: type === 'partner' ? onlyTheir(data) : data
+      data: type === 'partner' ? onlyTheir(dataPart) : dataPart
     })
   } catch (e) {
     const { status, error } = errorify(e)
@@ -67,6 +74,18 @@ route.post('/', verifyAdmin, async (req, res) => {
       _id: data.zoneid + '_' + toBase64(data.date),
       ...data
     })
+    if (!rep) throw new HTTPError(500, 'Internal server error')
+    res.json({ ok: true })
+  } catch (e) {
+    const { error, status } = errorify(e)
+    res.status(status).json({ ok: false, error })
+  }
+})
+
+route.delete('/:id', verifyAdmin, async (req, res) => {
+  try {
+    const data = await offersdb.get(req.params.id)
+    const rep = await offersdb.remove(data)
     if (!rep) throw new HTTPError(500, 'Internal server error')
     res.json({ ok: true })
   } catch (e) {
