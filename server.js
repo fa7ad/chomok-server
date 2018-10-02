@@ -3,8 +3,8 @@ import cors from 'cors'
 import helmet from 'helmet'
 import logger from 'morgan'
 import express from 'express'
+import memsess from 'memorystore'
 import session from 'express-session'
-import PouchSession from 'session-pouchdb-store'
 import { urlencoded, json } from 'body-parser'
 
 import passport from 'passport'
@@ -25,19 +25,25 @@ import {
 
 const app = express()
 
+const MemorySession = memsess(session)
+
 app.use(logger('dev'))
 app.use(helmet())
 app.use(cors())
+app.set('trust proxy', true)
 app.use(
   session({
     secret: 'monkey 13',
     rolling: true,
     resave: true,
-    saveUninitialized: false,
-    store: new PouchSession(),
+    saveUninitialized: true,
+    store: new MemorySession({
+      checkPeriod: 86400000 // prune expired entries every 24h
+    }),
+    proxy: true,
     cookie: {
       maxAge: 6e4,
-      secure: env.prod
+      secure: true
     }
   })
 )
