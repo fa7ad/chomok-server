@@ -1,0 +1,11 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Fahad Hossain <8bit.demoncoder@gmail.com> (https://fa7ad.github.io/)",
+  "license": "MIT",
+  "dependencies": {
+    "fetch-cookie": "^0.7.2",
+    "node-fetch": "^2.2.0"
+  }
+}
