@@ -25,6 +25,20 @@ fetch('http://localhost:3003/api/login', {
   )
   .then(r => r.json())
   .then(_ =>
+    fetch('http://localhost:3003/api/zones', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: 'Gulshan',
+        division: 'Dhaka'
+      })
+    })
+  )
+  .then(r => r.json())
+  .then(_ =>
     fetch('http://localhost:3003/api/register', {
       method: 'POST',
       credentials: 'include',
