@@ -60,7 +60,7 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(usersdb.get)
 
-app.use(express.static(path.resolve(env.cwd, 'dist')))
+app.use(express.static(path.resolve(env.cwd, 'build')))
 
 app.use('/api', authController)
 app.use('/api/users', verifyAdmin, usersController)
