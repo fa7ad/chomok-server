@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   apps: [
     {
@@ -7,7 +9,7 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 3003,
         DB_PREFIX: 'chomok_',
-        CWD: '/home/node-www/chomok-server'
+        CWD: path.resolve(__dirname)
       },
       node_args: ['-r', 'esm'],
       exec_mode: 'fork'

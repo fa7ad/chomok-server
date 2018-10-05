@@ -42,7 +42,7 @@ app.use(
     }),
     proxy: env.prod,
     cookie: {
-      maxAge: 6e4
+      maxAge: 10 * 60 * 1000
     }
   })
 )
