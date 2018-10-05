@@ -3,6 +3,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import logger from 'morgan'
 import express from 'express'
+import compress from 'compression'
 import memsess from 'memorystore'
 import session from 'express-session'
 import { urlencoded, json } from 'body-parser'
@@ -28,6 +29,7 @@ const app = express()
 const MemorySession = memsess(session)
 
 app.use(logger('dev'))
+app.use(compress())
 app.use(helmet())
 app.use(cors())
 app.set('trust proxy', true)
