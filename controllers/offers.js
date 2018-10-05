@@ -53,6 +53,12 @@ route.get('/:division/:name', async (req, res) => {
     const zoneid = zone._id
     const allOffers = onlyDocs(await offersdb.allDocs({ include_docs: true }))
     const match = findLike({ zoneid, date: getLocalDate() }, allOffers)
+    if (!match) {
+      throw new HTTPError(
+        404,
+        "There's no offer for this region, at the moment"
+      )
+    }
     const partner = prop('business')(await usersdb.get(match.partnerid))
     if (!partner) throw new HTTPError(500, 'Not a valid offer')
 
