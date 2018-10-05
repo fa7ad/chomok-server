@@ -68,7 +68,7 @@ app.use('/api/zones', zonesController)
 app.use('/api/offers', offersController)
 app.use('/api/codes', verifyLogin, codesController)
 app.use('*', (req, res) => {
-  res.sendFile(path.join(env.cwd, 'dist', 'index.html'))
+  res.sendFile(path.join(env.cwd, 'build', 'index.html'))
 })
 
 prepUser(usersdb)
