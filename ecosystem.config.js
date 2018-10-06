@@ -14,7 +14,7 @@ module.exports = {
       node_args: ['-r', 'esm'],
       exec_mode: 'fork',
       watch: true,
-      ignore_watch: ['node_modules']
+      ignore_watch: ['node_modules', 'db']
     }
   ]
 }
