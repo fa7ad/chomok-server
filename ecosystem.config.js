@@ -12,9 +12,9 @@ module.exports = {
         CWD: path.resolve(__dirname)
       },
       node_args: ['-r', 'esm'],
-      exec_mode: 'fork'
+      exec_mode: 'fork',
+      watch: true,
+      ignore_watch: ['node_modules']
     }
-  ],
-  watch: true,
-  ignore_watch: ['node_modules']
+  ]
 }
