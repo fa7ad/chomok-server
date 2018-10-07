@@ -9,7 +9,8 @@
   "private": true,
   "scripts": {
     "start": "node -r esm server.js",
-    "clean": "rimraf 'db/ch*'"
+    "clean": "rimraf 'db/ch*'",
+    "stage": "env NODE_ENV=production PORT=3003 DB_PREFIX=chomok_ CWD=$(pwd) node -r esm server.js "
   },
   "dependencies": {
     "bcrypt": "^3.0.0",

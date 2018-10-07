@@ -7,7 +7,7 @@ const userSchema = Joi.object().keys({
     .min(3)
     .required(),
   phone: Joi.string()
-    .regex(/^(\+88|0088)?01[5-9]\d{8}$/)
+    .regex(/^(\+88|0088)?0(1[5-9])?\d{8}$/)
     .required(),
   email: Joi.string()
     .email()
@@ -28,7 +28,7 @@ const userSchema = Joi.object().keys({
     .keys({
       address: Joi.string(),
       name: Joi.string(),
-      phone: Joi.string().regex(/^(\+88|0088)?0(1[5-9]|2)\d{8}$/)
+      phone: Joi.string().regex(/^(\+88|0088)?0(1[5-9])?\d{8}$/)
     })
     .requiredKeys(['address', 'name', 'phone']),
   type: Joi.string().default(
