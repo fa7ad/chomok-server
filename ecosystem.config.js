@@ -7,9 +7,7 @@ module.exports = {
       name: 'Chomok-server',
       script: 'server.dist.js',
       env,
-      exec_mode: 'fork',
-      watch: true,
-      ignore_watch: ['node_modules', 'db']
+      exec_mode: 'fork'
     }
   ]
 }
