@@ -9,11 +9,12 @@ import userSchema from '../models/user'
 
 PouchDB.plugin(PouchFind)
 
+const cwd = resolve(process.cwd() || __dirname)
 export const env = {
   port: process.env.PORT || 3333,
   db_prefix: process.env.DB_PREFIX || 'ch_',
-  cwd: resolve(process.env.CWD || process.cwd() || __dirname),
-  client: resolve(this.cwd, 'client', 'build'),
+  cwd,
+  client: resolve(cwd, 'client', 'build'),
   prod: process.env.NODE_ENV === 'production'
 }
 
