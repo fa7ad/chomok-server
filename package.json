@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "prebuild": "cd client && yarn build",
+    "prebuild": "echo Don\\'t forget to create a client build",
     "build": "webpack --progress",
     "prestart": "npm run build",
     "start": "node server.dist.js",
