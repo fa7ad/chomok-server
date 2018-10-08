@@ -12,7 +12,8 @@ PouchDB.plugin(PouchFind)
 export const env = {
   port: process.env.PORT || 3333,
   db_prefix: process.env.DB_PREFIX || 'ch_',
-  cwd: resolve(process.env.CWD || __dirname),
+  cwd: resolve(process.env.CWD || process.cwd() || __dirname),
+  client: resolve(this.cwd, 'client', 'build'),
   prod: process.env.NODE_ENV === 'production'
 }
 

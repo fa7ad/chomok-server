@@ -62,7 +62,7 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(usersdb.get)
 
-app.use(express.static(path.resolve(env.cwd, 'build')))
+app.use(express.static(env.client))
 
 app.use('/api', authController)
 app.use('/api/users', verifyAdmin, usersController)
@@ -70,7 +70,7 @@ app.use('/api/zones', zonesController)
 app.use('/api/offers', offersController)
 app.use('/api/codes', verifyLogin, codesController)
 app.use('*', (req, res) => {
-  res.sendFile(path.join(env.cwd, 'build', 'index.html'))
+  res.sendFile(path.join(env.client, 'index.html'))
 })
 
 prepUser(usersdb)

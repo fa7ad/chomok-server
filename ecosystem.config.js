@@ -1,17 +1,12 @@
-const path = require('path')
+const dotenv = require('dotenv')
+const { parsed: env } = dotenv.config()
 
 module.exports = {
   apps: [
     {
       name: 'Chomok-server',
-      script: 'server.js',
-      env: {
-        NODE_ENV: 'production',
-        PORT: 3003,
-        DB_PREFIX: 'chomok_',
-        CWD: path.resolve(__dirname)
-      },
-      node_args: ['-r', 'esm'],
+      script: 'server.dist.js',
+      env,
       exec_mode: 'fork',
       watch: true,
       ignore_watch: ['node_modules', 'db']
