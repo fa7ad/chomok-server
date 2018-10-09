@@ -54,7 +54,7 @@ fetch('http://localhost:3003/api/login', {
         business: {
           name: 'Some Cafe',
           address: 'some street, some area, dhaka',
-          phone: '0266666666'
+          phone: '026666666'
         }
       })
     })
