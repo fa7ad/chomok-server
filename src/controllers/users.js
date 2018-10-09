@@ -2,7 +2,7 @@ import { omit, reduce } from 'ramda'
 import { Router } from 'express'
 
 import { usersdb, HTTPError, errorify } from '../lib/utils'
-import { regUser } from '../lib/middleware'
+import { regUser, verifyAdmin } from '../lib/middleware'
 
 const route = Router()
 route.get('/:type?', async (req, res) => {
@@ -31,6 +31,18 @@ route.post('/:type?', regUser, async (req, res) => {
     res.json({ ok: true })
   } catch (e) {
     const { status, error } = errorify(e)
+    res.status(status).json({ ok: false, error })
+  }
+})
+
+route.delete('/:id', verifyAdmin, async (req, res) => {
+  try {
+    const data = await usersdb.get(req.params.id)
+    const rep = await usersdb.remove(data)
+    if (!rep) throw new HTTPError(500, 'Internal server error')
+    res.json({ ok: true })
+  } catch (e) {
+    const { error, status } = errorify(e)
     res.status(status).json({ ok: false, error })
   }
 })

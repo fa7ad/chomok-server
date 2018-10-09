@@ -1,23 +1,22 @@
 import { Router } from 'express'
-import { pickAll, merge } from 'ramda'
+import { pickAll } from 'ramda'
 
 import passport from 'passport'
 
 import { regUser } from '../lib/middleware'
-import { usersdb } from '../lib/utils'
+import { usersdb, errorify, HTTPError } from '../lib/utils'
 
 const route = Router()
 
-route.post('/register', regUser, function (req, res) {
-  usersdb
-    .post({ ...req.body })
-    .then(_ => res.json({ ok: true }))
-    .catch(_ =>
-      res.status(500).json({
-        ok: false,
-        error: { message: 'Internal server error' }
-      })
-    )
+route.post('/register', regUser, async function (req, res) {
+  try {
+    const rep = await usersdb.post(req.body)
+    if (!rep) throw HTTPError(500, 'Internal server error')
+    res.json({ ok: true })
+  } catch (e) {
+    const { status, error } = errorify(e)
+    res.status(status).json({ ok: false, error })
+  }
 })
 
 route.post('/login', passport.authenticate('local', {}), function (req, res) {

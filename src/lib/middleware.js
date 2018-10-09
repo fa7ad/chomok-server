@@ -2,7 +2,7 @@ import { compare, hash } from 'bcrypt'
 import { merge, path } from 'ramda'
 
 import userSchema from '../models/user'
-import { usersdb, errorify } from './utils'
+import { usersdb, errorify, HTTPError } from './utils'
 
 export async function regUser (req, res, next) {
   try {
@@ -11,11 +11,7 @@ export async function regUser (req, res, next) {
       selector: { username: data.username }
     })
     if (userlist.length > 0) {
-      res.status(409).json({
-        ok: false,
-        error: { message: 'Username already exists' }
-      })
-      return
+      throw HTTPError(409, 'Username already exists')
     }
 
     req.body = merge(data, {
