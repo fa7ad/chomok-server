@@ -37,7 +37,7 @@ async function seedAdmin (db) {
     admin: true
   })
   data.password = await hash(data.password, 10)
-  return db.post(data)
+  return db.put({ _id: '0a0b1a1b', ...data })
 }
 
 export async function createUserIndex (db) {

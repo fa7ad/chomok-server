@@ -81,5 +81,8 @@ app.use('*', (req, res) => {
 
 prepUser(usersdb)
   .then(listen(app, env.port))
-  .then(_ => console.log(`Listening on http://localhost:${env.port}`))
+  .then(_ => {
+    console.log('NODE_ENV:', process.env.NODE_ENV || env.prod)
+    console.log(`Listening on http://localhost:${env.port}`)
+  })
   .catch(console.error)

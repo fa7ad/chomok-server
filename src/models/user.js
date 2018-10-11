@@ -18,7 +18,7 @@ const userSchema = Joi.object().keys({
     .required(),
   password: Joi.string()
     .required()
-    .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/)
+    .regex(/^(?=.*\d).{6,32}$/)
     .required(),
   dateReg: Joi.string()
     .regex(/^\d{8}$/)
