@@ -1,4 +1,5 @@
 const dotenv = require('dotenv')
 
 dotenv.config()
-require('./server.dist')
+require('@babel/register')
+require('./src/server')

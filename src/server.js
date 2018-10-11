@@ -27,27 +27,33 @@ import {
 const app = express()
 
 const MemorySession = memsess(session)
+const sess = {
+  secret: 'monkey 13',
+  rolling: true,
+  resave: false,
+  saveUninitialized: true,
+  store: new MemorySession({
+    checkPeriod: 7.2e6 // 2 hrs
+  }),
+  cookie: {
+    maxAge: 6e5 // 10 mins
+  }
+}
 
-app.use(logger('dev'))
+app.use(logger(env.prod ? 'tiny' : 'dev'))
 app.use(compress())
 app.use(helmet())
 app.use(cors())
-app.set('trust proxy', true)
-app.use(
-  session({
-    secret: 'monkey 13',
-    rolling: true,
-    resave: true,
-    saveUninitialized: true,
-    store: new MemorySession({
-      checkPeriod: 86400000
-    }),
-    proxy: env.prod,
-    cookie: {
-      maxAge: 10 * 60 * 1000
-    }
+
+if (env.prod) {
+  Object.assign(sess, {
+    proxy: true,
+    cookie: { secure: true, domain: '.chomok.xyz' }
   })
-)
+  app.set('trust proxy', true)
+}
+
+app.use(session(sess))
 app.use(urlencoded({ limit: '5mb', extended: true }))
 app.use(json({ limit: '5mb', extended: true }))
 

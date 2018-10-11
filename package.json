@@ -11,7 +11,7 @@
     "prebuild": "echo Don\\'t forget to create a client build",
     "build": "webpack --progress",
     "prestart": "npm run build",
-    "start": "node server.dist.js",
+    "start": "node -r dotenv/config server.dist.js",
     "clean": "rimraf 'db/ch*'",
     "stage": "node stage.js"
   },
@@ -40,6 +40,7 @@
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
+    "@babel/register": "^7.0.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "dotenv": "^6.0.0",
