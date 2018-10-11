@@ -1,3 +1,0 @@
-[submodule "client"]
-	path = client
-	url = git@gitlab.com:desndev/chomok-client.git
