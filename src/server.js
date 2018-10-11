@@ -48,9 +48,9 @@ app.use(cors())
 if (env.prod) {
   Object.assign(sess, {
     proxy: true,
-    cookie: { secure: true, domain: '.chomok.xyz' }
+    cookie: { secure: true, domain: '.chomok.xyz', maxAge: 6e5 }
   })
-  app.set('trust proxy', true)
+  app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal'])
 }
 
 app.use(session(sess))
