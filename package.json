@@ -1,0 +1,56 @@
+{
+  "name": "chomok",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://chomok.xyz",
+  "dependencies": {
+    "@reach/router": "^1.1.1",
+    "antd": "^3.9.2",
+    "emotion": "^9.2.10",
+    "immutable": "^3.8.2",
+    "moment": "^2.22.2",
+    "prop-types": "^15.6.2",
+    "ramda": "^0.25.0",
+    "react": "^16.5.2",
+    "react-burger-menu": "^2.5.2",
+    "react-dom": "^16.5.2",
+    "react-emotion": "^9.2.10",
+    "react-images-upload": "^1.2.3",
+    "react-loadable": "^5.5.0",
+    "react-spinners": "^0.4.5",
+    "react-transition-group": "^2.5.0"
+  },
+  "devDependencies": {
+    "eslint-config-standard": "^12.0.0",
+    "eslint-config-standard-react": "^7.0.2",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-react": "^7.11.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "fs-extra": "^7.0.0",
+    "react-scripts": "2.0.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "standard",
+      "standard-react"
+    ],
+    "parser": "babel-eslint",
+    "env": {
+      "browser": true
+    }
+  },
+  "browserslist": [
+    ">10%",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "proxy": "http://localhost:3003"
+}
