@@ -68,3 +68,8 @@ export const Login = Loadable({
   loading,
   loader: _ => import('./pages/Login')
 })
+
+export const Register = Loadable({
+  loading,
+  loader: _ => import('./pages/Register')
+})

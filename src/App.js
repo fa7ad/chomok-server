@@ -1,8 +1,8 @@
 import React from 'react'
-import { navigate, Link, Location, Redirect } from '@reach/router'
+import { navigate, Link, Location, Redirect, redirectTo } from '@reach/router'
 
 // UI components
-import { Menu, Dropdown, Icon } from 'antd'
+import { Menu, Dropdown } from 'antd'
 import BurgerMenu from 'react-burger-menu/lib/menus/slide'
 
 // Custom components
@@ -11,7 +11,7 @@ import UserIcon from './components/UserIcon'
 import Router from './components/TransitionRouter'
 
 // Routes wrapped with react-loadable
-import { Home, Offer, Admin, Login, NotFound } from './asyncRoutes'
+import { Home, Offer, Admin, Login, Register, NotFound } from './asyncRoutes'
 
 // Resources
 import logoImg from './img/logo.png'
@@ -33,7 +33,7 @@ class App extends React.PureComponent {
 
   menu = [
     <Menu.Item key='0' onClick={this.navigate('/login')}>
-      Login
+      Login / Register
     </Menu.Item>,
     <Menu.Item key='1' onClick={this.navigate('/admin')}>
       Settings
@@ -64,8 +64,7 @@ class App extends React.PureComponent {
   render () {
     return (
       <>
-        <Location>{this.getBurgerMenu}</Location>
-        <Location>{this.getLogoAndUser}</Location>
+        <Location>{this.getNavContent}</Location>
         <Router id='page'>
           <Home path='/' />
           <Offer path='/offer/:zone' />
@@ -74,6 +73,7 @@ class App extends React.PureComponent {
             {this.adminPage}
           </Admin>
           <Login path='/login' />
+          <Register path='/register' />
           <NotFound default />
         </Router>
       </>
@@ -101,29 +101,28 @@ class App extends React.PureComponent {
     setTimeout(this.getLoginState, 900)
   }
 
-  getLogoAndUser = ({ location }) => {
-    if (/login|admin/.test(location.href)) return null
+  getNavContent = ({ location }) => {
+    if (/admin/.test(location.href)) return null
     return (
       <>
-        <Logo src={logoImg} alt='Chomok Logo' onClick={this.navigate('/')} />
-        <Dropdown
-          overlay={<Menu children={this.state.menuItems} />}
-          trigger={['click']}>
-          <UserIcon type='user' onMouseOver={this.getLoginState} />
-        </Dropdown>
+        <BurgerMenu outerContainerId='root' pageWrapId='page'>
+          <Link to='/'>Home</Link>
+          <Link to='/about'>About Us</Link>
+          <Link to='/contact'>Contact Us</Link>
+        </BurgerMenu>
+        <Link to='/'>
+          <Logo src={logoImg} alt='Chomok Logo' />
+        </Link>
+        {!/login|register/.test(location.href) && (
+          <Dropdown
+            overlay={<Menu children={this.state.menuItems} />}
+            trigger={['click']}>
+            <UserIcon type='user' onMouseOver={this.getLoginState} />
+          </Dropdown>
+        )}
       </>
     )
   }
-
-  getBurgerMenu = ({ location }) =>
-    !/admin/.test(location.href) ? (
-      <BurgerMenu outerContainerId='root' pageWrapId='page'>
-        <Link to='/'>Home</Link>
-        <Link to='/about'>About Us</Link>
-        <Link to='/contact'>Contact Us</Link>
-      </BurgerMenu>
-    ) : null
-
   adminPage = page => {
     if (!this.state.loggedIn) {
       navigate('/login')
@@ -132,7 +131,7 @@ class App extends React.PureComponent {
 
     switch (page) {
       case 'home':
-        return <Icon type='home' />
+        return <img src='https://i.imgur.com/661H1ET.gif' alt="You're dumb" />
       case 'offers':
         return <Admin.Offers />
       case 'add-offer':
@@ -156,7 +155,7 @@ class App extends React.PureComponent {
             if (ok) navigate('/')
           })
           .catch(e => console.error(e))
-        return 'Logging you out...'
+        return redirectTo('/')
       default:
         return <h1>Invalid route xD</h1>
     }

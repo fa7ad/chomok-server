@@ -28,11 +28,11 @@ const form = css`
   align-items: stretch;
 `
 
-class Login extends React.PureComponent {
+class Register extends React.PureComponent {
   state = {
     username: '',
     password: '',
-    progress: 'lock'
+    progress: 'user-add'
   }
 
   prefixStyle = {
@@ -43,32 +43,57 @@ class Login extends React.PureComponent {
     const { getFieldDecorator } = this.props.form
     return (
       <Wrapper style={this.props.style}>
-        <Form onSubmit={this.doLogin} className={form}>
-          <strong>Please log in</strong>
+        <Form onSubmit={this.doReg} className={form}>
+          <strong>Please enter your info</strong>
+          <Form.Item>
+            {getFieldDecorator('name', {
+              rules: [
+                {
+                  required: true,
+                  message: 'Please enter the full name!'
+                }
+              ]
+            })(<Input placeholder='Full name' />)}
+          </Form.Item>
+          <Form.Item>
+            {getFieldDecorator('phone', {
+              rules: [
+                {
+                  required: true,
+                  message: 'Please enter the phone number!'
+                }
+              ]
+            })(<Input placeholder='Phone number' />)}
+          </Form.Item>
           <Form.Item>
             {getFieldDecorator('username', {
               rules: [
-                { required: true, message: 'Please input your username!' }
+                {
+                  required: true,
+                  message: 'Please enter the username!'
+                }
               ]
-            })(
-              <Input
-                prefix={<Icon type='user' style={this.prefixStyle} />}
-                placeholder='Username'
-              />
-            )}
+            })(<Input placeholder='Username' />)}
           </Form.Item>
           <Form.Item>
             {getFieldDecorator('password', {
               rules: [
-                { required: true, message: 'Please input your Password!' }
+                {
+                  required: true,
+                  message: 'Please enter the password!'
+                }
               ]
-            })(
-              <Input
-                prefix={<Icon type='lock' style={this.prefixStyle} />}
-                type='password'
-                placeholder='Password'
-              />
-            )}
+            })(<Input placeholder='Password' type='password' />)}
+          </Form.Item>
+          <Form.Item>
+            {getFieldDecorator('email', {
+              rules: [
+                {
+                  required: true,
+                  message: 'Please enter the email!'
+                }
+              ]
+            })(<Input placeholder='E-mail' type='email' />)}
           </Form.Item>
 
           <Button.Group size='large'>
@@ -76,10 +101,10 @@ class Login extends React.PureComponent {
               type={this.state.progress === 'close' ? 'danger' : 'primary'}
               htmlType='submit'
               size='large'>
-              <Icon type={this.state.progress} /> Login
+              <Icon type={this.state.progress} /> Register
             </Button>
-            <Button type='default' href='/register'>
-              Register <Icon type='user-add' />
+            <Button type='default' href='/login'>
+              Login <Icon type='lock' />
             </Button>
           </Button.Group>
         </Form>
@@ -91,34 +116,32 @@ class Login extends React.PureComponent {
     console.error(e)
     this.setState({ progress: 'close' })
     setTimeout(() => {
-      this.setState({ progress: 'lock' })
+      this.setState({ progress: 'user-add' })
     }, 1500)
   }
 
-  doLogin = e => {
+  doReg = e => {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (err) return this.handleErr(err)
 
       this.setState({ progress: 'loading' })
-      const { username: uname, password } = values
-      const username = uname.toLowerCase()
 
-      fetch('/api/login', {
+      fetch('/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify(values)
       })
         .then(r => r.json())
         .then(({ ok }) => {
           if (ok) {
             this.setState({ progress: 'check' })
             setTimeout(() => {
-              navigate('/')
+              navigate('/login')
             }, 500)
-          } else throw new Error('Unauthorized')
+          } else throw new Error('Bad request')
         })
         .catch(this.handleErr)
     })
@@ -130,4 +153,4 @@ class Login extends React.PureComponent {
   }
 }
 
-export default Form.create()(Login)
+export default Form.create()(Register)
