@@ -6,5 +6,8 @@ import './styles/burger-menu.css'
 import './styles/index.css'
 
 import App from './App'
+import * as serviceWorker from './serviceWorker'
 
 ReactDOM.render(<App />, document.querySelector('#root'))
+
+serviceWorker.register()
