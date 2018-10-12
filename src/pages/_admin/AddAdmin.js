@@ -31,7 +31,7 @@ class AddAdmin extends PureComponent {
         .then(rep => {
           if (rep.ok) {
             this.setState({ progress: 'check' })
-            navigate('/admin/partners')
+            navigate('/admin/admins')
           } else throw rep
         })
         .catch(e => {

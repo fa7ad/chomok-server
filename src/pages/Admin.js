@@ -24,7 +24,8 @@ const ContentInner = styled('div')`
   margin: 16px 0;
   display: flex;
   justify-content: center;
-  >div, .ant-form {
+  > div,
+  .ant-form {
     flex-grow: 1;
     flex-basis: 100%;
   }
@@ -62,7 +63,11 @@ class Admin extends React.PureComponent {
             theme='dark'
             defaultSelectedKeys={[this.props.page]}
             mode='vertical'
-            style={{ textAlign: 'left' }}>
+            style={{
+              textAlign: 'left',
+              overflowY: 'scroll',
+              height: '100vh'
+            }}>
             {this.props.pages.map(this.mapMenu)}
           </Menu>
         </Sider>
@@ -71,7 +76,7 @@ class Admin extends React.PureComponent {
             style={{ color: '#fff', padding: 0, textTransform: 'uppercase' }}>
             {this.props.page}
           </Header>
-          <Content style={{ margin: '0 16px' }}>
+          <Content style={{ margin: '0 16px', minHeight: '90vh' }}>
             <ContentInner>{renderProp(this.props.page)}</ContentInner>
           </Content>
           <Footer style={{ textAlign: 'center' }}>

@@ -76,11 +76,11 @@ class AdminAdmins extends React.PureComponent {
         <Button onClick={this.showItem(item)} type='primary'>
           View
         </Button>,
-        item._id !== '0a0b1a1b' && (
+        item._id !== '0a0b1a1b' ? (
           <Button onClick={this.deleteItem(item._id, idx)} type='danger'>
             DELETE!
           </Button>
-        )
+        ) : null
       ]}>
       <List.Item.Meta
         title={this.getItemTitle(item)}
