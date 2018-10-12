@@ -1,10 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'react-emotion'
-import { navigate } from '@reach/router'
+import styled, { css } from 'react-emotion'
+import { navigate, Link } from '@reach/router'
 import { Layout, Menu, Icon } from 'antd'
 
 import logoImg from '../img/logo.png'
+
+const { Header, Content, Footer: Foot, Sider } = Layout
 
 const Logo = styled('img')`
   height: 60px;
@@ -34,7 +36,26 @@ const ContentInner = styled('div')`
   }
 `
 
-const { Header, Content, Footer, Sider } = Layout
+const Footer = styled(Foot)`
+  text-align: center;
+`
+
+const menu = css`
+  text-align: left;
+  overflow-y: scroll;
+  height: 100vh;
+`
+
+const header = css`
+  color: #fff;
+  padding: 0;
+  text-transform: uppercase;
+`
+
+const content = css`
+  margin: 0 16px;
+  min-height: 90vh;
+`
 
 class Admin extends React.PureComponent {
   state = {
@@ -54,34 +75,23 @@ class Admin extends React.PureComponent {
           breakpoint='sm'
           collapsed={this.state.collapsed}
           onCollapse={this.onCollapse}>
-          <Logo
-            src={logoImg}
-            alt='Chomok Logo'
-            onClick={this.navigate('/../')}
-          />
+          <Link to='/'>
+            <Logo src={logoImg} alt='Chomok Logo' />
+          </Link>
           <Menu
             theme='dark'
             defaultSelectedKeys={[this.props.page]}
             mode='vertical'
-            style={{
-              textAlign: 'left',
-              overflowY: 'scroll',
-              height: '100vh'
-            }}>
+            className={menu}>
             {this.props.pages.map(this.mapMenu)}
           </Menu>
         </Sider>
         <Layout>
-          <Header
-            style={{ color: '#fff', padding: 0, textTransform: 'uppercase' }}>
-            {this.props.page}
-          </Header>
-          <Content style={{ margin: '0 16px', minHeight: '90vh' }}>
+          <Header className={header}>{this.props.page}</Header>
+          <Content className={content}>
             <ContentInner>{renderProp(this.props.page)}</ContentInner>
           </Content>
-          <Footer style={{ textAlign: 'center' }}>
-            Chomok ©2018 Created by @fa7ad
-          </Footer>
+          <Footer>Chomok ©2018 Created by @fa7ad</Footer>
         </Layout>
       </FullLayout>
     )

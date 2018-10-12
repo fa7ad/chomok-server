@@ -14,6 +14,7 @@ export default styled(Icon)`
   transition: all 250ms ease;
   padding: 5px;
   border-radius: 50%;
+  background-color: rgba(214, 0, 88, 0.25);
 
   &:hover {
     filter: none;
