@@ -51,16 +51,19 @@ export async function createUserIndex (db) {
 
 export const listen = (app, port) => () =>
   new Promise((resolve, reject) => {
-    app.listen(port, resolve)
+    app.listen(port, err => {
+      if (err) reject(err)
+      else resolve(true)
+    })
   })
 
 export async function prepUser (db) {
   try {
     const user = await db.get('0a0b1a1b')
-    if (user) console.log('Admin: prgmlord:Prgml0rd')
+    if (user) console.log(`Admin(${user._id}): prgmlord:Prgml0rd`)
   } catch (e) {
     const admin = await seedAdmin(db)
-    if (admin) console.log('Admin: prgmlord:Prgml0rd')
+    if (admin) console.log(`Admin(${admin._id}): prgmlord:Prgml0rd`)
   }
   try {
     await createUserIndex(db)

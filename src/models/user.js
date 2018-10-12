@@ -1,24 +1,25 @@
 import Joi from 'joi'
 import { getLocalDate } from '../lib/utils'
 
-const userSchema = Joi.object().keys({
+const userSchema = Joi.object({
   name: Joi.string()
-    .regex(/^[a-zA-z\s]+$/)
+    .trim()
     .min(3)
     .required(),
   phone: Joi.string()
-    .regex(/^(\+88|0088)?0(1[5-9])?\d{8}$/)
+    .regex(/^(\+88|0088)?0?(1[5-9])?\d{8}$/)
     .required(),
   email: Joi.string()
     .email()
     .required(),
   username: Joi.string()
+    .token()
     .lowercase()
-    .regex(/^[a-z][^\s]{4,}$/)
+    .min(4)
     .required(),
   password: Joi.string()
-    .required()
-    .regex(/^(?=.*\d).{6,32}$/)
+    .min(6)
+    .max(32)
     .required(),
   dateReg: Joi.string()
     .regex(/^\d{8}$/)
@@ -31,10 +32,13 @@ const userSchema = Joi.object().keys({
       phone: Joi.string().regex(/^(\+88|0088)?0(1[5-9])?\d{8}$/)
     })
     .requiredKeys(['address', 'name', 'phone']),
-  type: Joi.string().default(
-    ctx => (ctx.admin ? 'admin' : ctx.business ? 'partner' : 'user'),
-    'derived user type'
-  )
+  type: Joi.string()
+    .valid(['admin', 'partner', 'user'])
+    .default(ctx => {
+      if (ctx.admin) return 'admin'
+      if (ctx.business) return 'partner'
+      return 'user'
+    }, 'user type')
 })
 
 export default userSchema
