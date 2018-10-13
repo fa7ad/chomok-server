@@ -1,4 +1,5 @@
 import React from 'react'
+import { css } from 'react-emotion'
 import { navigate, Link, Location, Redirect, redirectTo } from '@reach/router'
 
 // UI components
@@ -11,10 +12,24 @@ import UserIcon from './components/UserIcon'
 import Router from './components/TransitionRouter'
 
 // Routes wrapped with react-loadable
-import { Home, Offer, Admin, Login, Register, NotFound } from './asyncRoutes'
+import {
+  Home,
+  Offer,
+  Admin,
+  Login,
+  Register,
+  NotFound,
+  Partner
+} from './asyncRoutes'
 
 // Resources
 import logoImg from './img/logo.png'
+
+const w100 = css`
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+`
 
 class App extends React.PureComponent {
   logout = e => {
@@ -36,9 +51,12 @@ class App extends React.PureComponent {
       Login / Register
     </Menu.Item>,
     <Menu.Item key='1' onClick={this.navigate('/admin')}>
-      Settings
+      Admin Panel
     </Menu.Item>,
-    <Menu.Item key='2' onClick={this.logout}>
+    <Menu.Item key='2' onClick={this.navigate('/partner')}>
+      Partner Panel
+    </Menu.Item>,
+    <Menu.Item key='3' onClick={this.logout}>
       Logout
     </Menu.Item>
   ]
@@ -61,6 +79,13 @@ class App extends React.PureComponent {
     { key: 'logout', name: 'LOGOUT', icon: 'logout' }
   ]
 
+  partnerPages = [
+    { key: 'home', name: 'HOME', icon: 'home' },
+    { key: 'offers', name: 'OFFERS', icon: 'bars' },
+    { key: 'scan', name: 'SCAN', icon: 'scan' },
+    { key: 'logout', name: 'LOGOUT', icon: 'logout' }
+  ]
+
   render () {
     return (
       <>
@@ -72,6 +97,15 @@ class App extends React.PureComponent {
           <Admin path='/admin/:page' pages={this.adminPages}>
             {this.adminPage}
           </Admin>
+          <Redirect
+            from='/partner'
+            path='/partner'
+            to='/partner/home'
+            noThrow
+          />
+          <Partner path='/partner/:page' pages={this.partnerPages}>
+            {this.partnerPage}
+          </Partner>
           <Login path='/login' />
           <Register path='/register' />
           <NotFound default />
@@ -84,10 +118,14 @@ class App extends React.PureComponent {
     fetch('/api/loggedIn', { credentials: 'include' })
       .then(r => r.json())
       .then(loggedIn => {
-        const menuItems = loggedIn.ok
-          ? this.menu.slice(1)
-          : this.menu.slice(0, 1)
-        if (loggedIn.ok && loggedIn.type !== 'admin') menuItems.splice(0, 1)
+        const menuItems = []
+        if (loggedIn.ok) {
+          if (loggedIn.type === 'admin') menuItems.push(this.menu[1])
+          if (loggedIn.type === 'partner') menuItems.push(this.menu[2])
+          menuItems.push(this.menu[3])
+        } else {
+          menuItems.push(this.menu[0])
+        }
         this.setState({ loggedIn, menuItems })
       })
       .catch(e => {
@@ -98,11 +136,11 @@ class App extends React.PureComponent {
 
   componentDidMount () {
     this.getLoginState()
-    setTimeout(this.getLoginState, 900)
+    setTimeout(this.getLoginState, 500)
   }
 
   getNavContent = ({ location }) => {
-    if (/admin/.test(location.href)) return null
+    if (/admin|partner/.test(location.href)) return null
     return (
       <>
         <BurgerMenu outerContainerId='root' pageWrapId='page'>
@@ -123,6 +161,38 @@ class App extends React.PureComponent {
       </>
     )
   }
+
+  partnerPage = page => {
+    if (!this.state.loggedIn) {
+      navigate('/login')
+      return null
+    }
+    switch (page) {
+      case 'home':
+        return (
+          <img
+            src='https://i.imgur.com/661H1ET.gif'
+            alt="You're dumb"
+            className={w100}
+          />
+        )
+      case 'offers':
+        return <Partner.Offers />
+      case 'scan':
+        return <Partner.Scan />
+      case 'logout':
+        fetch('/api/logout', { credentials: 'include' })
+          .then(r => r.json())
+          .then(({ ok }) => {
+            if (ok) navigate('/')
+          })
+          .catch(e => console.error(e))
+        return redirectTo('/')
+      default:
+        return <h1>Invalid route xD</h1>
+    }
+  }
+
   adminPage = page => {
     if (!this.state.loggedIn) {
       navigate('/login')
@@ -131,7 +201,13 @@ class App extends React.PureComponent {
 
     switch (page) {
       case 'home':
-        return <img src='https://i.imgur.com/661H1ET.gif' alt="You're dumb" />
+        return (
+          <img
+            src='https://i.imgur.com/661H1ET.gif'
+            alt="You're dumb"
+            className={w100}
+          />
+        )
       case 'offers':
         return <Admin.Offers />
       case 'add-offer':

@@ -25,7 +25,7 @@ const section = css`
     margin: 5% auto;
   }
   .hex-img {
-    margin: 10% auto;
+    margin: 5px auto;
   }
 `
 

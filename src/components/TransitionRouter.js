@@ -11,7 +11,11 @@ const TransitionRouter = ({ children, ...p }) => (
         <CSSTransition key={location.key} classNames='fade' timeout={100}>
           <Router
             location={location}
-            className={cx('router', { admin: /admin/.test(location.href) })}
+            className={cx(
+              'router',
+              { admin: /admin/.test(location.href) },
+              { partner: /partner/.test(location.href) }
+            )}
             {...p}>
             {children}
           </Router>
