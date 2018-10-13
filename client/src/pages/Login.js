@@ -17,7 +17,7 @@ const form = css`
   box-shadow: 0 0 5px rgba(55, 55, 55, 0.85);
   border-radius: 5px;
   padding: 24px;
-  width: 50%;
+  width: 100%;
   max-width: 360px;
   min-height: 240px;
   color: #fff;
@@ -71,11 +71,10 @@ class Login extends React.PureComponent {
             )}
           </Form.Item>
 
-          <Button.Group size='large'>
+          <Button.Group>
             <Button
               type={this.state.progress === 'close' ? 'danger' : 'primary'}
-              htmlType='submit'
-              size='large'>
+              htmlType='submit'>
               <Icon type={this.state.progress} /> Login
             </Button>
             <Button type='default' href='/register'>

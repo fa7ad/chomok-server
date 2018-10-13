@@ -6,7 +6,7 @@ export const Home = Loadable.Map({
   loading,
   loader: {
     Home: () => import('./pages/Home'),
-    navItems: () => fetch('/api/zones/').then(r => r.json())
+    navItems: () => fetch('/api/zones').then(r => r.json())
   },
   render (loaded, props) {
     const Home = loaded.Home.default
@@ -52,6 +52,19 @@ Admin.Admins = Loadable({
 Admin.AddAdmin = Loadable({
   loading,
   loader: _ => import('./pages/_admin/AddAdmin')
+})
+
+export const Partner = Loadable({
+  loading,
+  loader: _ => import('./pages/Partner')
+})
+Partner.Offers = Loadable({
+  loading,
+  loader: _ => import('./pages/_partner/Offers')
+})
+Partner.Scan = Loadable({
+  loading,
+  loader: _ => import('./pages/_partner/Scan')
 })
 
 export const Offer = Loadable({
