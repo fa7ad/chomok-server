@@ -1,6 +1,6 @@
 import React from 'react'
-import { Icon } from 'antd'
 import PropTypes from 'prop-types'
+import { Icon, Modal } from 'antd'
 import { navigate } from '@reach/router'
 import styled, { css, cx } from 'react-emotion'
 
@@ -10,9 +10,22 @@ import Loading from '../components/Loading'
 
 import wheel from '../img/wheelofluck.png'
 
-const jcsb = css`
+const section = css`
   &&& {
-    justify-content: space-between;
+    justify-content: flex-start;
+  }
+  .shrink {
+    flex-shrink: 1;
+  }
+  .descr {
+    flex-basis: 20%;
+    text-transform: uppercase;
+  }
+  .spin-cta {
+    margin: 5% auto;
+  }
+  .hex-img {
+    margin: 10% auto;
   }
 `
 
@@ -79,10 +92,35 @@ const spin = () => css`
   }
 `
 
+const qrmodal = css`
+  .ant-confirm-content {
+    margin-left: 0 !important;
+    text-align: center;
+
+    img {
+      width: 100%;
+    }
+  }
+`
+
+const qrModal = function (qr, code) {
+  Modal.info({
+    title: 'Show this code to the partner',
+    content: (
+      <>
+        <img src={qr} alt='code' />
+        <h3>{code}</h3>
+      </>
+    ),
+    className: qrmodal
+  })
+}
+
 class Offer extends React.PureComponent {
   state = {
     offer: 'loading',
-    spinning: false
+    spinning: false,
+    qr: null
   }
   render () {
     const { zone, style } = this.props
@@ -100,19 +138,25 @@ class Offer extends React.PureComponent {
 
     return (
       <>
-        <Section dark style={style} className={jcsb}>
-          <Zone>
+        <Section dark style={style} className={section}>
+          <Zone className='shrink'>
             <Icon type='environment' theme='filled' />
             <span>{zone}</span>
           </Zone>
-          <HexImg data-bg={this.state.offer.image} data-size='40vmin' />
-          <div>
+          <HexImg
+            data-bg={this.state.offer.image}
+            data-size='40vmin'
+            className='hex-img'
+          />
+          <div className='spin-cta'>
             <div>SPIN THE WHEEL TO GET YOUR % OFF!</div>
             <Button onClick={this.spin}>Spin the wheel!</Button>
           </div>
-          <div />
-          <div />
-          <div />
+          <div className='descr'>
+            {this.state.offer.partner.name}
+            <br />
+            <Icon type='compass' /> {this.state.offer.partner.address}
+          </div>
         </Section>
         <Section style={style}>
           <WheelWrapper>
@@ -125,6 +169,7 @@ class Offer extends React.PureComponent {
               src={wheel}
               alt='wheel'
               onAnimationEnd={this.stopSpin}
+              onClick={this.spin}
             />
           </WheelWrapper>
         </Section>
@@ -134,10 +179,7 @@ class Offer extends React.PureComponent {
 
   componentDidMount () {
     fetch('/api/offers/dhaka/' + this.props.zone)
-      .then(r => {
-        if (r.status === 401) navigate('/login')
-        return r.json()
-      })
+      .then(r => r.json())
       .then(reply => {
         if (!reply.ok) this.setState({ offer: false })
         this.setState({ offer: reply.data })
@@ -146,12 +188,29 @@ class Offer extends React.PureComponent {
 
   spin = e => {
     e.preventDefault()
+    this.getQr(this.state.offer._id)
     this.setState({ spinning: true })
   }
 
   stopSpin = e => {
     this.setState({ spinning: false })
+    setTimeout(this.showQR(this.state.qr.qr, this.state.qr.code), 500)
   }
+
+  getQr = id =>
+    fetch('/api/codes/' + id, {
+      credentials: 'include'
+    })
+      .then(r => {
+        if (r.status === 401) navigate('/login')
+        return r.json()
+      })
+      .then(res => {
+        if (!res.ok) this.setState({ offer: false })
+        this.setState({ qr: res.data })
+      })
+
+  showQR = (qr, code) => e => qrModal(qr, code)
 
   static propTypes = {
     style: PropTypes.object,
