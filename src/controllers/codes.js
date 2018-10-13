@@ -23,26 +23,30 @@ route.get('/:offerid', async (req, res) => {
       merge(doc, { reqBy: uniq([].concat(doc.reqBy, req.user._id)) })
     )
     if (!rep) throw new HTTPError(500, 'Internal server error')
-    let code
+    let code = {}
     const { docs } = await codesdb.find({
       selector: {
         offerid: req.params.offerid,
         userid: req.user._id
       }
     })
-    if (docs) {
+    if (docs.length > 0) {
       code = docs[0]._id
     } else {
       code = shortid.generate()
-      await codesdb.put({
+      const rep = await codesdb.put({
         _id: code,
         offerid: req.params.offerid,
         userid: req.user._id,
         validity: doc.date,
         value: doc.percentage
       })
+      if (!rep) throw new HTTPError(500, 'Internal server error')
     }
-    res.json({ ok: true, data: { code, qr: await qr.toDataURL('chomok://' + code) } })
+    res.json({
+      ok: true,
+      data: { code, qr: await qr.toDataURL('chomok://' + code) }
+    })
   } catch (e) {
     const { status, error } = errorify(e)
     res.status(status).json({ ok: false, error })
