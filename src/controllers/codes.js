@@ -34,14 +34,13 @@ route.get('/:offerid', async (req, res) => {
       code = docs[0]._id
     } else {
       code = shortid.generate()
-      const ins = await codesdb.put({
+      await codesdb.put({
         _id: code,
         offerid: req.params.offerid,
         userid: req.user._id,
         validity: doc.date,
         value: doc.percentage
       })
-      if (!ins) throw new HTTPError(500, 'Internal server error')
     }
     res.json({ ok: true, data: { code, qr: await qr.toDataURL('chomok://' + code) } })
   } catch (e) {
