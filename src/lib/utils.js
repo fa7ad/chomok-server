@@ -78,7 +78,10 @@ export function errorify (err) {
       ? map(prop('message'), err.details)
       : err.message || 'Internal server error'
   }
-  return { status: err.status || (err.isJoi ? 400 : 500), error }
+  return {
+    status: err.status || (err.isJoi ? 400 : err.notFound ? 404 : 500),
+    error
+  }
 }
 
 export const onlyDocs = compose(

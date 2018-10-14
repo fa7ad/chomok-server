@@ -24,10 +24,8 @@ route.get('/:offerid/:offertype', async (req, res) => {
     if (doc.date !== getLocalDate()) throw new HTTPError(400, 'Offer expired')
     if (!doc.values[offertype]) throw new HTTPError(404, 'Invalid offer type')
 
-    const rep = await offersdb.put(
-      merge(doc, { reqBy: uniq([].concat(doc.reqBy, req.user._id)) })
-    )
-    if (!rep) throw new HTTPError(500, 'Internal server error')
+    const reqBy = uniq([...doc.reqBy, req.user._id])
+    await offersdb.put(merge(doc, { reqBy }))
 
     const all = onlyDocs(await codesdb.allDocs({ include_docs: true }))
     const existing = findLike({
@@ -41,7 +39,7 @@ route.get('/:offerid/:offertype', async (req, res) => {
       const offers = doc.values[offertype]
       value = random.int(0, offers.length)
       code = shortid.generate()
-      const rep = await codesdb.put({
+      await codesdb.put({
         _id: code,
         offerid: offerid,
         userid: req.user._id,
@@ -49,7 +47,6 @@ route.get('/:offerid/:offertype', async (req, res) => {
         offertype,
         value
       })
-      if (!rep) throw new HTTPError(500, 'Internal server error')
     }
     res.json({
       ok: true,
@@ -80,14 +77,11 @@ route.post('/:promoid', async (req, res) => {
     }
     const code = await codesdb.get(req.params.promoid)
     if (!code) throw new HTTPError(404, 'Invalid promo code')
-    const sameUser = req.user._id === code.userid
-    const valid = getLocalDate() === code.validity
-    if (sameUser && valid) {
+    if (code.validity === getLocalDate()) {
       const offer = await offersdb.get(code.offerid)
-      const rep = await offersdb.put(
-        merge(offer, { useBy: uniq([].concat(offer.useBy, req.user._id)) })
-      )
-      if (!rep) throw new HTTPError(500, 'Internal server error')
+      const useBy = uniq([...offer.useBy, code.userid])
+
+      await offersdb.put(merge(offer, { useBy }))
       res.json({ ok: true, data: { value: code.value } })
     } else throw new HTTPError(400, 'Invalid/expired promo code')
   } catch (e) {

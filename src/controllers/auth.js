@@ -4,14 +4,13 @@ import { pickAll } from 'ramda'
 import passport from 'passport'
 
 import { regUser } from '../lib/middleware'
-import { usersdb, errorify, HTTPError } from '../lib/utils'
+import { usersdb, errorify } from '../lib/utils'
 
 const route = Router()
 
 route.post('/register', regUser, async function (req, res) {
   try {
-    const rep = await usersdb.post(req.body)
-    if (!rep) throw HTTPError(500, 'Internal server error')
+    await usersdb.post(req.body)
     res.json({ ok: true })
   } catch (e) {
     const { status, error } = errorify(e)

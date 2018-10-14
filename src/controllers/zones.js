@@ -26,8 +26,7 @@ route.post('/', verifyAdmin, async (req, res) => {
     }
 
     const data = await zoneSchema.validate(bodyData)
-    const rep = await zonesdb.post(data)
-    if (!rep) throw new HTTPError(500, 'Internal server error')
+    await zonesdb.post(data)
     res.json({ ok: true })
   } catch (e) {
     const { status, error } = errorify(e)
@@ -51,8 +50,7 @@ route.get('/:div', async (req, res) => {
 route.delete('/:id', verifyAdmin, async (req, res) => {
   try {
     const data = await zonesdb.get(req.params.id)
-    const rep = await zonesdb.remove(data)
-    if (!rep) throw new HTTPError(500, 'Internal server error')
+    await zonesdb.remove(data)
     res.json({ ok: true })
   } catch (e) {
     const { error, status } = errorify(e)

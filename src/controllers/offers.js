@@ -59,8 +59,7 @@ route.get('/:division/:name', async (req, res) => {
         "There's no offer for this region, at the moment"
       )
     }
-    const partner = prop('business')(await usersdb.get(match.partnerid))
-    if (!partner) throw new HTTPError(500, 'Not a valid offer')
+    const { business: partner } = await usersdb.get(match.partnerid)
 
     const cleanup = compose(
       merge({ partner }),
@@ -76,11 +75,10 @@ route.get('/:division/:name', async (req, res) => {
 route.post('/', verifyAdmin, async (req, res) => {
   try {
     const data = await offerSchema.validate(req.body)
-    const rep = await offersdb.put({
+    await offersdb.put({
       _id: data.zoneid + '_' + toBase64(data.date),
       ...data
     })
-    if (!rep) throw new HTTPError(500, 'Internal server error')
     res.json({ ok: true })
   } catch (e) {
     const { error, status } = errorify(e)
@@ -91,8 +89,7 @@ route.post('/', verifyAdmin, async (req, res) => {
 route.delete('/:id', verifyAdmin, async (req, res) => {
   try {
     const data = await offersdb.get(req.params.id)
-    const rep = await offersdb.remove(data)
-    if (!rep) throw new HTTPError(500, 'Internal server error')
+    await offersdb.remove(data)
     res.json({ ok: true })
   } catch (e) {
     const { error, status } = errorify(e)
