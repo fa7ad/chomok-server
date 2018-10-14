@@ -20,9 +20,8 @@ export async function regUser (req, res, next) {
     if (data.type !== 'user') {
       verifyAdmin(req, res, next)
     } else next()
-  } catch (e) {
-    const { status, error } = errorify(e)
-    res.status(status).json({ ok: false, error })
+  } catch (err) {
+    errorify(err, res)
   }
 }
 

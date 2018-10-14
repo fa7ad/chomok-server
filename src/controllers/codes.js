@@ -52,9 +52,8 @@ route.get('/:offerid/:offertype', async (req, res) => {
       ok: true,
       data: { code, value }
     })
-  } catch (e) {
-    const { status, error } = errorify(e)
-    res.status(status).json({ ok: false, error })
+  } catch (err) {
+    errorify(err, res)
   }
 })
 
@@ -64,9 +63,8 @@ route.get('/_/:promoid', verifyLogin, async (req, res) => {
     if (!code) throw new HTTPError(404, 'Invalid promo code')
     if (!req.user._id === code.userid) throw new HTTPError(403, 'Forbidden')
     res.send(code.value)
-  } catch (e) {
-    const { status } = errorify(e)
-    res.sendStatus(status)
+  } catch (err) {
+    res.sendStatus(errorify(err).status)
   }
 })
 
@@ -84,9 +82,8 @@ route.post('/:promoid', async (req, res) => {
       await offersdb.put(merge(offer, { useBy }))
       res.json({ ok: true, data: { value: code.value } })
     } else throw new HTTPError(400, 'Invalid/expired promo code')
-  } catch (e) {
-    const { status, error } = errorify(e)
-    res.status(status).json({ ok: false, error })
+  } catch (err) {
+    errorify(err, res)
   }
 })
 

@@ -72,16 +72,18 @@ export async function prepUser (db) {
   }
 }
 
-export function errorify (err) {
+export const errorify = (err, res = false) => {
   const error = {
     message: err.isJoi
       ? map(prop('message'), err.details)
       : err.message || 'Internal server error'
   }
-  return {
+  const result = {
     status: err.status || (err.isJoi ? 400 : err.notFound ? 404 : 500),
     error
   }
+  if (res) res.status(result.status).json({ ok: false, error })
+  return result
 }
 
 export const onlyDocs = compose(

@@ -37,9 +37,8 @@ route.get('/', verifyLogin, async (req, res) => {
       ok: true,
       data: type === 'partner' ? onlyTheir(dataPart) : dataPart
     })
-  } catch (e) {
-    const { status, error } = errorify(e)
-    res.status(status).json({ ok: false, error })
+  } catch (err) {
+    errorify(err, res)
   }
 })
 
@@ -66,9 +65,8 @@ route.get('/:division/:name', async (req, res) => {
       omit(['reqBy', 'useBy'])
     )
     res.json({ ok: true, data: cleanup(match) })
-  } catch (e) {
-    const { status, error } = errorify(e)
-    res.status(status).json({ ok: false, error })
+  } catch (err) {
+    errorify(err, res)
   }
 })
 
@@ -80,9 +78,8 @@ route.post('/', verifyAdmin, async (req, res) => {
       ...data
     })
     res.json({ ok: true })
-  } catch (e) {
-    const { error, status } = errorify(e)
-    res.status(status).json({ ok: false, error })
+  } catch (err) {
+    errorify(err, res)
   }
 })
 
@@ -91,9 +88,8 @@ route.delete('/:id', verifyAdmin, async (req, res) => {
     const data = await offersdb.get(req.params.id)
     await offersdb.remove(data)
     res.json({ ok: true })
-  } catch (e) {
-    const { error, status } = errorify(e)
-    res.status(status).json({ ok: false, error })
+  } catch (err) {
+    errorify(err, res)
   }
 })
 

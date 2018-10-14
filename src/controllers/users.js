@@ -18,9 +18,8 @@ route.get('/:type?', async (req, res) => {
       return users
     }, [])
     res.json({ ok: true, data: onlyOfType(rows) })
-  } catch (e) {
-    const { status, error } = errorify(e)
-    res.status(status).json({ ok: false, error })
+  } catch (err) {
+    errorify(err, res)
   }
 })
 
@@ -28,9 +27,8 @@ route.post('/:type?', regUser, async (req, res) => {
   try {
     await usersdb.post(req.body)
     res.json({ ok: true })
-  } catch (e) {
-    const { status, error } = errorify(e)
-    res.status(status).json({ ok: false, error })
+  } catch (err) {
+    errorify(err, res)
   }
 })
 
@@ -39,9 +37,8 @@ route.delete('/:id', verifyAdmin, async (req, res) => {
     const data = await usersdb.get(req.params.id)
     await usersdb.remove(data)
     res.json({ ok: true })
-  } catch (e) {
-    const { error, status } = errorify(e)
-    res.status(status).json({ ok: false, error })
+  } catch (err) {
+    errorify(err, res)
   }
 })
 

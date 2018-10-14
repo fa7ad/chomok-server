@@ -12,9 +12,8 @@ route.post('/register', regUser, async function (req, res) {
   try {
     await usersdb.post(req.body)
     res.json({ ok: true })
-  } catch (e) {
-    const { status, error } = errorify(e)
-    res.status(status).json({ ok: false, error })
+  } catch (err) {
+    errorify(err, res)
   }
 })
 

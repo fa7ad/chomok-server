@@ -12,7 +12,7 @@ route.get('/', async (req, res) => {
   try {
     const zoneslist = onlyDocs(await zonesdb.allDocs({ include_docs: true }))
     res.json({ ok: true, data: zoneslist })
-  } catch (e) {
+  } catch (err) {
     res.status(404).json({ ok: false, error: { message: 'No zones found' } })
   }
 })
@@ -28,9 +28,8 @@ route.post('/', verifyAdmin, async (req, res) => {
     const data = await zoneSchema.validate(bodyData)
     await zonesdb.post(data)
     res.json({ ok: true })
-  } catch (e) {
-    const { status, error } = errorify(e)
-    res.status(status).json({ ok: false, error })
+  } catch (err) {
+    errorify(err, res)
   }
 })
 
@@ -41,9 +40,8 @@ route.get('/:div', async (req, res) => {
     const allZones = onlyDocs(await zonesdb.allDocs({ include_docs: true }))
     const data = filter(propEq('division', div), allZones)
     res.json({ ok: true, data })
-  } catch (e) {
-    const { status, error } = errorify(e)
-    res.status(status || 404).json({ ok: false, error })
+  } catch (err) {
+    errorify(err, res)
   }
 })
 
@@ -52,9 +50,8 @@ route.delete('/:id', verifyAdmin, async (req, res) => {
     const data = await zonesdb.get(req.params.id)
     await zonesdb.remove(data)
     res.json({ ok: true })
-  } catch (e) {
-    const { error, status } = errorify(e)
-    res.status(status).json({ ok: false, error })
+  } catch (err) {
+    errorify(err, res)
   }
 })
 
