@@ -17,7 +17,7 @@ import zonesController from './controllers/zones'
 import offersController from './controllers/offers'
 import codesController from './controllers/codes'
 
-import { env, listen, usersdb, prepUser } from './lib/utils'
+import { env, listen, usersdb, prepUser, errorify } from './lib/utils'
 import {
   localStrategyCallback,
   verifyAdmin,
@@ -77,6 +77,9 @@ app.use('/api/offers', offersController)
 app.use('/api/codes', verifyLogin, codesController)
 app.use('*', (req, res) => {
   res.sendFile(path.join(env.client, 'index.html'))
+})
+app.use(function (err, req, res, next) {
+  if (err) errorify(err, res)
 })
 
 prepUser(usersdb)

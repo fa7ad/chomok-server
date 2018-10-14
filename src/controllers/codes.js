@@ -15,7 +15,7 @@ import {
 
 const route = Router()
 
-route.get('/:offerid/:offertype', async (req, res) => {
+route.get('/:offerid/:offertype', async (req, res, next) => {
   try {
     const { offertype, offerid } = req.params
 
@@ -53,7 +53,7 @@ route.get('/:offerid/:offertype', async (req, res) => {
       data: { code, value }
     })
   } catch (err) {
-    errorify(err, res)
+    next(err)
   }
 })
 
@@ -68,7 +68,7 @@ route.get('/_/:promoid', verifyLogin, async (req, res) => {
   }
 })
 
-route.post('/:promoid', async (req, res) => {
+route.post('/:promoid', async (req, res, next) => {
   try {
     if (!req.user.type === 'partner') {
       throw HTTPError(401, 'Only partners are allowed to verify')
@@ -83,7 +83,7 @@ route.post('/:promoid', async (req, res) => {
       res.json({ ok: true, data: { value: code.value } })
     } else throw new HTTPError(400, 'Invalid/expired promo code')
   } catch (err) {
-    errorify(err, res)
+    next(err)
   }
 })
 

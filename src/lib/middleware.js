@@ -2,7 +2,7 @@ import { compare, hash } from 'bcrypt'
 import { merge, path } from 'ramda'
 
 import userSchema from '../models/user'
-import { usersdb, errorify, HTTPError } from './utils'
+import { usersdb, HTTPError } from './utils'
 
 export async function regUser (req, res, next) {
   try {
@@ -21,17 +21,15 @@ export async function regUser (req, res, next) {
       verifyAdmin(req, res, next)
     } else next()
   } catch (err) {
-    errorify(err, res)
+    next(err)
   }
 }
 
 export function verifyAdmin (req, res, next) {
   if (req.user && req.user.admin) next()
   else {
-    res.status(!req.user ? 401 : 403).json({
-      ok: false,
-      error: { message: 'Only admin can access this data' }
-    })
+    const err = new HTTPError(req.user ? 403 : 401, 'Unauthorized!')
+    next(err)
   }
 }
 

@@ -7,7 +7,6 @@ import {
   zonesdb,
   offersdb,
   onlyDocs,
-  errorify,
   toBase64,
   findLike,
   getLocalDate,
@@ -17,7 +16,7 @@ import {
 
 const route = Router()
 
-route.get('/', verifyLogin, async (req, res) => {
+route.get('/', verifyLogin, async (req, res, next) => {
   const { type } = req.user
   try {
     if (!/^(partner|admin)$/.test(type)) {
@@ -38,11 +37,11 @@ route.get('/', verifyLogin, async (req, res) => {
       data: type === 'partner' ? onlyTheir(dataPart) : dataPart
     })
   } catch (err) {
-    errorify(err, res)
+    next(err)
   }
 })
 
-route.get('/:division/:name', async (req, res) => {
+route.get('/:division/:name', async (req, res, next) => {
   const params = map(toLower, req.params)
   try {
     const allZones = onlyDocs(await zonesdb.allDocs({ include_docs: true }))
@@ -66,11 +65,11 @@ route.get('/:division/:name', async (req, res) => {
     )
     res.json({ ok: true, data: cleanup(match) })
   } catch (err) {
-    errorify(err, res)
+    next(err)
   }
 })
 
-route.post('/', verifyAdmin, async (req, res) => {
+route.post('/', verifyAdmin, async (req, res, next) => {
   try {
     const data = await offerSchema.validate(req.body)
     await offersdb.put({
@@ -79,17 +78,17 @@ route.post('/', verifyAdmin, async (req, res) => {
     })
     res.json({ ok: true })
   } catch (err) {
-    errorify(err, res)
+    next(err)
   }
 })
 
-route.delete('/:id', verifyAdmin, async (req, res) => {
+route.delete('/:id', verifyAdmin, async (req, res, next) => {
   try {
     const data = await offersdb.get(req.params.id)
     await offersdb.remove(data)
     res.json({ ok: true })
   } catch (err) {
-    errorify(err, res)
+    next(err)
   }
 })
 

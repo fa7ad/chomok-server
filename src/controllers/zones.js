@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { filter, propEq, map, toLower } from 'ramda'
 
-import { zonesdb, errorify, onlyDocs, HTTPError } from '../lib/utils'
+import { zonesdb, onlyDocs, HTTPError } from '../lib/utils'
 import { verifyAdmin } from '../lib/middleware'
 import zoneSchema from '../models/zone'
 
@@ -17,7 +17,7 @@ route.get('/', async (req, res) => {
   }
 })
 
-route.post('/', verifyAdmin, async (req, res) => {
+route.post('/', verifyAdmin, async (req, res, next) => {
   const bodyData = lowerAll(req.body)
   try {
     const existing = await zonesdb.find({ selector: { name: bodyData.name } })
@@ -29,11 +29,11 @@ route.post('/', verifyAdmin, async (req, res) => {
     await zonesdb.post(data)
     res.json({ ok: true })
   } catch (err) {
-    errorify(err, res)
+    next(err)
   }
 })
 
-route.get('/:div', async (req, res) => {
+route.get('/:div', async (req, res, next) => {
   const { div } = lowerAll(req.params)
   try {
     if (!div) throw new HTTPError(400, 'No division given.')
@@ -41,17 +41,17 @@ route.get('/:div', async (req, res) => {
     const data = filter(propEq('division', div), allZones)
     res.json({ ok: true, data })
   } catch (err) {
-    errorify(err, res)
+    next(err)
   }
 })
 
-route.delete('/:id', verifyAdmin, async (req, res) => {
+route.delete('/:id', verifyAdmin, async (req, res, next) => {
   try {
     const data = await zonesdb.get(req.params.id)
     await zonesdb.remove(data)
     res.json({ ok: true })
   } catch (err) {
-    errorify(err, res)
+    next(err)
   }
 })
 

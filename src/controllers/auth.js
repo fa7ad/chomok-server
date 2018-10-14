@@ -4,16 +4,16 @@ import { pickAll } from 'ramda'
 import passport from 'passport'
 
 import { regUser } from '../lib/middleware'
-import { usersdb, errorify } from '../lib/utils'
+import { usersdb } from '../lib/utils'
 
 const route = Router()
 
-route.post('/register', regUser, async function (req, res) {
+route.post('/register', regUser, async function (req, res, next) {
   try {
     await usersdb.post(req.body)
     res.json({ ok: true })
   } catch (err) {
-    errorify(err, res)
+    next(err)
   }
 })
 
