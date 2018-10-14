@@ -93,7 +93,10 @@ export class HTTPError extends Error {
   }
 }
 
-export const getLocalDate = () => DateTime.local().setZone('UTC+6').toFormat('yyyyLLdd')
+export const getLocalDate = () =>
+  DateTime.local()
+    .setZone('UTC+6')
+    .toFormat('yyyyLLdd')
 
 export const findLike = curry((pred, data) => find(whereEq(pred), data))
 
