@@ -8,10 +8,19 @@ const offerSchema = Joi.object({
   date: Joi.string()
     .regex(/^\d{8}$/)
     .default(getLocalDate, 'Posting Date'),
-  values: Joi.object({
-    perc: Joi.array().items(Joi.number().min(0).max(100)).default(false),
-    special: Joi.array().default(false),
-    bulk: Joi.array().default(false)
+  offers: Joi.object({
+    perc: Joi.object({
+      values: Joi.array().items(Joi.number().min(0).max(100)),
+      win: Joi.number().min(0).max(100)
+    }).default(false),
+    special: Joi.object({
+      values: Joi.array(),
+      win: Joi.string()
+    }).default(false),
+    bulk: Joi.object({
+      values: Joi.array(),
+      win: Joi.string()
+    }).default(false)
   }),
   reqBy: Joi.array().default([]),
   useBy: Joi.array().default([])

@@ -16,6 +16,7 @@ import usersController from './controllers/users'
 import zonesController from './controllers/zones'
 import offersController from './controllers/offers'
 import codesController from './controllers/codes'
+import imagesController from './controllers/images'
 
 import { env, listen, usersdb, prepUser, errorify } from './lib/utils'
 import {
@@ -75,7 +76,8 @@ app.use('/api/users', verifyAdmin, usersController)
 app.use('/api/zones', zonesController)
 app.use('/api/offers', offersController)
 app.use('/api/codes', verifyLogin, codesController)
-app.use('*', (req, res) => {
+app.use('/images', imagesController)
+app.use(/^\/about|admin|contact|login|partner|offer|register/, (req, res) => {
   res.sendFile(path.join(env.client, 'index.html'))
 })
 app.use(function (err, req, res, next) {

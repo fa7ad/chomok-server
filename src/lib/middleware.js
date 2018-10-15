@@ -57,7 +57,10 @@ export async function localStrategyCallback (username, password, done) {
 
 export function verifyLogin (req, res, next) {
   if (req.user) return next()
-  res
-    .status(401)
-    .json({ ok: false, error: { message: 'Please login to access this data' } })
+  throw HTTPError(401, 'Unauthorized')
+}
+
+export function verifyAuthorized (req, res, next) {
+  if (req.user && req.user.type && req.user.type !== 'user') return next()
+  throw HTTPError(req.user ? 403 : 401, 'Unauthorized')
 }

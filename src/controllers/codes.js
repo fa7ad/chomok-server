@@ -1,4 +1,3 @@
-import random from 'random'
 import shortid from 'shortid'
 import { Router } from 'express'
 import { merge, uniq } from 'ramda'
@@ -22,7 +21,7 @@ route.get('/:offerid/:offertype', async (req, res, next) => {
     const doc = await offersdb.get(offerid)
     if (!doc) throw new HTTPError(404, 'No such offer')
     if (doc.date !== getLocalDate()) throw new HTTPError(400, 'Offer expired')
-    if (!doc.values[offertype]) throw new HTTPError(404, 'Invalid offer type')
+    if (!doc.offers[offertype]) throw new HTTPError(404, 'Invalid offer type')
 
     const reqBy = uniq([...doc.reqBy, req.user._id])
     await offersdb.put(merge(doc, { reqBy }))
@@ -37,7 +36,7 @@ route.get('/:offerid/:offertype', async (req, res, next) => {
     let value = existing.value
     if (!code) {
       const offers = doc.values[offertype]
-      value = random.int(0, offers.length)
+      value = offers.win
       code = shortid.generate()
       await codesdb.put({
         _id: code,
