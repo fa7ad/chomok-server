@@ -10,12 +10,16 @@ import userSchema from '../models/user'
 PouchDB.plugin(PouchFind)
 
 const cwd = resolve(process.cwd() || __dirname)
+const prod = process.env.NODE_ENV === 'production'
+const port = process.env.PORT || 3333
+
 export const env = {
-  port: process.env.PORT || 3333,
+  port,
   db_prefix: process.env.DB_PREFIX || 'ch_',
+  prod,
   cwd,
   client: resolve(cwd, 'client', 'build'),
-  prod: process.env.NODE_ENV === 'production'
+  url: prod ? 'https://chomok.xyz' : 'http://localhost:' + port
 }
 
 export const createDB = name =>

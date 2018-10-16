@@ -62,5 +62,5 @@ export function verifyLogin (req, res, next) {
 
 export function verifyAuthorized (req, res, next) {
   if (req.user && req.user.type && req.user.type !== 'user') return next()
-  throw HTTPError(req.user ? 403 : 401, 'Unauthorized')
+  next(new HTTPError(req.user ? 403 : 401, 'Unauthorized'))
 }

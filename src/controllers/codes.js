@@ -44,6 +44,7 @@ route.get('/:offerid/:offertype', async (req, res, next) => {
         userid: req.user._id,
         validity: doc.date,
         offertype,
+        offers: offers.values,
         value
       })
     }
