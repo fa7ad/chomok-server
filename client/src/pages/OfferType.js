@@ -7,6 +7,7 @@ import { Link } from '@reach/router'
 import { map, filter, keys } from 'ramda'
 
 import { Wrapper, Box } from './NotFound'
+import Loading from '../components/Loading'
 import { Section, button } from '../components/Layout'
 
 const offerType = css`
@@ -21,6 +22,7 @@ const offerType = css`
 
 class OfferType extends React.PureComponent {
   state = {
+    loading: true,
     types: []
   }
 
@@ -32,6 +34,9 @@ class OfferType extends React.PureComponent {
 
   render () {
     const { style, zone } = this.props
+
+    if (this.state.loading) return <Loading />
+
     return this.state.types.length > 0 ? (
       <Section style={style} className={offerType}>
         <h1>Select an offer type</h1>
@@ -54,11 +59,12 @@ class OfferType extends React.PureComponent {
     fetch('/api/offers/dhaka/' + this.props.zone)
       .then(r => r.json())
       .then(reply => {
-        if (!reply.ok) return this.setState({ types: [] })
+        if (!reply.ok) return this.setState({ types: [], loading: false })
         if (reply.data.code) return this.showOldCode(reply.data)
         const { offers } = reply.data
         const types = keys(filter(el => el, offers))
         this.setState({
+          loading: false,
           types: map(el => ({ key: el, caption: this.dict[el] }), types)
         })
       })
