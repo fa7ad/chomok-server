@@ -157,6 +157,8 @@ class Offer extends React.PureComponent {
         window.wheel({
           el: this.wheel.current,
           data: this.state.offer.offers[this.props.type].values,
+          clockwise: false,
+          limit: 1,
           mode: 'online',
           radius: Math.floor(
             Math.min(window.innerHeight, window.innerWidth) * 0.22
