@@ -63,7 +63,14 @@ route.get('/:division/:name', async (req, res, next) => {
       merge({ partner }),
       omit(['reqBy', 'useBy'])
     )
-    res.json({ ok: true, data: cleanup(match) })
+
+    if (req.user) {
+      const code = findLike({ id: req.user._id }, match.reqBy)
+      match.code = code
+    }
+    const data = cleanup(match)
+
+    res.json({ ok: true, data })
   } catch (err) {
     next(err)
   }

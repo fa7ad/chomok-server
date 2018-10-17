@@ -11,7 +11,7 @@ export async function regUser (req, res, next) {
       selector: { username: data.username }
     })
     if (userlist.length > 0) {
-      throw HTTPError(409, 'Username already exists')
+      throw new HTTPError(409, 'Username already exists')
     }
 
     req.body = merge(data, {
@@ -57,7 +57,7 @@ export async function localStrategyCallback (username, password, done) {
 
 export function verifyLogin (req, res, next) {
   if (req.user) return next()
-  throw HTTPError(401, 'Unauthorized')
+  throw new HTTPError(401, 'Unauthorized')
 }
 
 export function verifyAuthorized (req, res, next) {
