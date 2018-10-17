@@ -62,7 +62,7 @@ class PartnerScan extends PureComponent {
         />
         <Button onClick={this.openImageDialog}>Submit QR</Button>
         <h1 style={{ color: this.state.correct ? 'green' : 'black' }}>
-          {this.state.percentage && 'Value: ' + this.state.percentage}
+          {this.state.percentage}
         </h1>
       </div>
     )

@@ -69,7 +69,9 @@ const Item = styled(ItemLink)`
     align-items: center;
     justify-content: center;
 
-
+    @media (max-width: 420px) {
+      font-size: smaller;
+    }
     width: 100%;
     height: 100%;
     z-index: 1;

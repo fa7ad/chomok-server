@@ -15,6 +15,7 @@ import Router from './components/TransitionRouter'
 import {
   Home,
   Offer,
+  OfferType,
   Admin,
   Login,
   Register,
@@ -92,7 +93,8 @@ class App extends React.PureComponent {
         <Location>{this.getNavContent}</Location>
         <Router id='page'>
           <Home path='/' />
-          <Offer path='/offer/:zone' />
+          <OfferType path='/offer/:zone' />
+          <Offer path='/offer/:zone/:type' />
           <Redirect from='/admin' path='/admin' to='/admin/home' noThrow />
           <Admin path='/admin/:page' pages={this.adminPages}>
             {this.adminPage}

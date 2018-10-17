@@ -42,8 +42,10 @@ const Footer = styled(Foot)`
 
 const menu = css`
   text-align: left;
-  overflow-y: scroll;
   height: 100vh;
+  @media (max-height: 512px) {
+    overflow-y: scroll;
+  }
 `
 
 const header = css`

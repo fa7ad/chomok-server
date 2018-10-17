@@ -4,9 +4,9 @@ import styled, { css, cx } from 'react-emotion'
 
 export const cdark = css`
   background: rgba(0, 0, 0, 0.45);
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  h1, h2, h3, h4, h5 {
+    color: #fefefe;
   }
 `
 
@@ -44,6 +44,25 @@ export const Section = styled(Sec)`
 `
 
 export const Button = styled('button')`
+  text-transform: uppercase;
+  font-family: Montserrat, sans-serif;
+  padding: 10px;
+  border: solid 2px #fff;
+  color: #fff;
+  cursor: pointer;
+  outline: none;
+  transition: all 250ms ease;
+  background-color: transparent;
+  background-size: 100% 200%;
+  background-image: linear-gradient(to bottom, transparent 50%, white 50%);
+
+  &:hover {
+    color: #333;
+    background-position: 0 -100%;
+  }
+`
+
+export const button = css`
   text-transform: uppercase;
   font-family: Montserrat, sans-serif;
   padding: 10px;
