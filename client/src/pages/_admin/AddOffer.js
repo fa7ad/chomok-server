@@ -1,10 +1,12 @@
 import React from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import { css } from 'react-emotion'
 import { navigate } from '@reach/router'
-import ImageUploader from 'react-images-upload'
-import { Form, Select, Button, Input, Icon, DatePicker } from 'antd'
+import styled, { css } from 'react-emotion'
+import { merge, lensProp, set, repeat, values, filter, equals } from 'ramda'
+import { Form, Select, Button, Icon, DatePicker, Upload, message } from 'antd'
+
+import SixInput from '../../components/SixInput'
 
 const FormItem = Form.Item
 const { Option } = Select
@@ -19,43 +21,63 @@ const formStyle = css`
     border-radius: 3px;
   }
 `
-
-const tob64 = file =>
-  new Promise(resolve => {
-    const reader = new FileReader()
-    reader.addEventListener('loadend', e => {
-      resolve(reader.result)
-    })
-    reader.readAsDataURL(file)
-  })
+const Wrapper = styled('div')`
+  display: flex;
+  justify-content: stretch;
+  width: 100%;
+  > div {
+    flex-basis: 33%;
+  }
+`
 
 class AddOffer extends React.PureComponent {
   state = {
     zones: [],
     partners: [],
-    progress: 'plus'
+    progress: 'plus',
+    offers: {
+      perc: false,
+      special: false,
+      bulk: false
+    },
+    noImageUp: false
   }
 
   handleSubmit = e => {
     e.preventDefault()
     this.setState({ progress: 'loading' })
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (err) return this.setState({ progress: 'close' })
-      values.date = values.date.format('YYYYMMDD')
-      tob64(values.image[0])
-        .then(image =>
-          JSON.stringify({ ...values, percentage: +values.percentage, image })
-        )
-        .then(body =>
-          fetch('/api/offers', {
-            credentials: 'include',
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body
-          })
-        )
+    this.props.form.validateFieldsAndScroll((err, data) => {
+      const offerTypes = filter(el => el, values(this.state.offers))
+      if (offerTypes.length < 1) {
+        message.error('Select at least one offer type')
+        if (!err) err = new Error('No offer type selected')
+      }
+      offerTypes.forEach(type => {
+        if (equals(undefined, type.win)) {
+          message.error('Select a winning offer')
+          if (!err) err = new Error('No offer winner selected')
+        }
+      })
+      if (err) {
+        setTimeout(_ => this.setState({ progress: 'plus' }), 900)
+        return this.setState({ progress: 'close' })
+      }
+      data.date = data.date.format('YYYYMMDD')
+      data.image = data.image.file.response
+      const { offers } = this.state
+
+      const body = JSON.stringify(merge(data, { offers }))
+
+      console.log(body)
+
+      fetch('/api/offers', {
+        credentials: 'include',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body
+      })
         .then(r => {
           if (r.status === 401) navigate('/login')
           return r.json()
@@ -75,20 +97,30 @@ class AddOffer extends React.PureComponent {
 
   render () {
     const { getFieldDecorator } = this.props.form
+    const { offers, noImageUp, progress, zones, partners } = this.state
 
     return (
       <Form onSubmit={this.handleSubmit} className={formStyle}>
         <FormItem>
           {getFieldDecorator('image', {
+            valuePropName: 'file',
             rules: [{ required: true, message: 'Please upload an image!' }]
           })(
-            <ImageUploader
-              withIcon
-              singleImage
-              buttonText='Choose image'
-              imgExtension={['.jpg', '.png']}
-              maxFileSize={2098000}
-            />
+            <Upload
+              name='file'
+              listType='picture-card'
+              accept='image/*'
+              action='/images'
+              withCredentials
+              beforeUpload={this.beforeUpload}
+              onRemove={this.enableUpload}>
+              {noImageUp ? null : (
+                <>
+                  <Icon type='plus' />
+                  <div className='ant-upload-text'>Upload</div>
+                </>
+              )}
+            </Upload>
           )}
         </FormItem>
         <FormItem>
@@ -106,38 +138,79 @@ class AddOffer extends React.PureComponent {
         <FormItem>
           {getFieldDecorator('zoneid', {
             rules: [{ required: true, message: 'Please select a zone!' }]
-          })(<Select placeholder='Select a zone'>{this.state.zones}</Select>)}
+          })(<Select placeholder='Select a zone'>{zones}</Select>)}
         </FormItem>
         <FormItem>
           {getFieldDecorator('partnerid', {
             rules: [{ required: true, message: 'Please select a partner!' }]
-          })(
-            <Select placeholder='Select a partner'>
-              {this.state.partners}
-            </Select>
-          )}
+          })(<Select placeholder='Select a partner'>{partners}</Select>)}
         </FormItem>
-        <FormItem>
-          {getFieldDecorator('percentage', {
-            rules: [{ required: true, message: 'Please enter a percentage!' }]
-          })(
-            <Input
-              type='number'
-              min={1}
-              max={100}
-              placeholder='Enter a percentage'
-            />
+        <Button.Group>
+          <Button
+            onClick={this.toggleOffer('perc')}
+            type={offers.perc ? 'primary' : 'default'}>
+            Percentage
+          </Button>
+          <Button
+            onClick={this.toggleOffer('special')}
+            type={offers.special ? 'primary' : 'default'}>
+            Special
+          </Button>
+          <Button
+            onClick={this.toggleOffer('bulk')}
+            type={offers.bulk ? 'primary' : 'default'}>
+            Bulk
+          </Button>
+        </Button.Group>
+        <Wrapper>
+          {offers.perc && (
+            <SixInput onChange={this.offerChange('perc')} label='Percentage' />
           )}
-        </FormItem>
+          {offers.special && (
+            <SixInput onChange={this.offerChange('special')} label='Special' />
+          )}
+          {offers.bulk && (
+            <SixInput onChange={this.offerChange('bulk')} label='Bulk' />
+          )}
+        </Wrapper>
         <FormItem>
           <Button
-            type={this.state.progress === 'close' ? 'danger' : 'primary'}
+            type={progress === 'close' ? 'danger' : 'primary'}
             htmlType='submit'>
-            <Icon type={this.state.progress} />
+            <Icon type={progress} />
           </Button>
         </FormItem>
       </Form>
     )
+  }
+
+  beforeUpload = file => {
+    const isLt3M = file.size / 1024 / 1024 < 3
+    if (!isLt3M) message.error('Image must smaller than 2.5MB!')
+    this.disableUpload()
+    return isLt3M
+  }
+
+  enableUpload = e => this.setState({ noImageUp: false })
+
+  disableUpload = e => this.setState({ noImageUp: true })
+
+  offerChange = offer => val => {
+    this.setState(p => {
+      const offers = merge(p.offers, { [offer]: val })
+      return { offers }
+    })
+  }
+
+  toggleOffer = name => e => {
+    this.setState(p => {
+      const offers = set(
+        lensProp(name),
+        p.offers[name] === false && { win: undefined, values: repeat(null, 6) },
+        p.offers
+      )
+      return { offers }
+    })
   }
 
   componentDidMount () {

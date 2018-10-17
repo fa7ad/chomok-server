@@ -10,4 +10,4 @@ import * as serviceWorker from './serviceWorker'
 
 ReactDOM.render(<App />, document.querySelector('#root'))
 
-serviceWorker.register()
+serviceWorker.unregister()

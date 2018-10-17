@@ -2,30 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Icon, Modal } from 'antd'
 import { navigate } from '@reach/router'
-import styled, { css, cx } from 'react-emotion'
+import styled, { css } from 'react-emotion'
+import QrCode from 'qrcode.react'
 
-import { Section, Button } from '../components/Layout'
+import { Section } from '../components/Layout'
 import { Wrapper, Box } from './NotFound'
 import Loading from '../components/Loading'
 
-import wheel from '../img/wheelofluck.png'
-
 const section = css`
   &&& {
-    justify-content: flex-start;
-  }
-  .shrink {
-    flex-shrink: 1;
-  }
-  .descr {
-    flex-basis: 20%;
-    text-transform: uppercase;
-  }
-  .spin-cta {
-    margin: 5% auto;
-  }
-  .hex-img {
-    margin: 5px auto;
+    justify-content: space-between;
   }
 `
 
@@ -46,7 +32,8 @@ const Zone = styled('div')`
 
 const HexImg = styled('div')`
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  min-height: ${p => p['data-size']};
+  max-height: ${p => p['data-size']};
+  height: 100%;
   width: ${p => p['data-size']};
   background-image: ${p => `url(${p['data-bg']})`};
   background-position: center center;
@@ -58,38 +45,11 @@ const HexImg = styled('div')`
   }
 `
 
-const Wheel = styled('img')`
-  position: relative;
-  width: 75%;
-  transform: rotate(143deg);
-`
-
 const WheelWrapper = styled('div')`
   display: flex;
   flex-direction: column;
   justify-content: stretch;
   align-items: center;
-`
-
-const WheelPin = styled(Icon)`
-  position: relative;
-  top: 40px;
-  z-index: 2;
-`
-
-const rand = (min, max) => min + Math.floor(Math.random() * (max - min))
-
-const spin = () => css`
-  animation: spin 2s ease-out 1;
-  transform-origin: center center;
-  @keyframes spin {
-    from {
-      transform: rotate(143deg);
-    }
-    to {
-      transform: rotate(${143 + 360 * rand(3, 10)}deg);
-    }
-  }
 `
 
 const qrmodal = css`
@@ -103,13 +63,29 @@ const qrmodal = css`
   }
 `
 
-const qrModal = function (qr, code) {
+const SpinCTA = styled('div')`
+  font-size: 1.5em;
+  margin: 15px auto;
+  color: #fff;
+  span {
+    background-color: #fff;
+    color: rgba(0, 0, 0, 0.85);
+  }
+`
+
+function qrModal (code, type) {
+  const dict = {
+    perc: 'Percentage Off',
+    special: 'Special Offer',
+    bulk: 'Bulk Discount'
+  }
   Modal.info({
     title: 'Show this code to the partner',
     content: (
       <>
-        <img src={qr} alt='code' />
-        <h3>{code}</h3>
+        <QrCode value={'chomok://' + code} />
+        <pre>{code}</pre>
+        <h3>Type: {dict[type]}</h3>
       </>
     ),
     className: qrmodal
@@ -118,10 +94,11 @@ const qrModal = function (qr, code) {
 
 class Offer extends React.PureComponent {
   state = {
-    offer: 'loading',
-    spinning: false,
-    qr: null
+    offer: 'loading'
   }
+
+  wheel = React.createRef()
+
   render () {
     const { zone, style } = this.props
     if (!this.state.offer) {
@@ -139,8 +116,8 @@ class Offer extends React.PureComponent {
     return (
       <>
         <Section dark style={style} className={section}>
-          <Zone className='shrink'>
-            <Icon type='environment' theme='filled' />
+          <Zone>
+            <Icon type='environment' />
             <span>{zone}</span>
           </Zone>
           <HexImg
@@ -148,29 +125,19 @@ class Offer extends React.PureComponent {
             data-size='40vmin'
             className='hex-img'
           />
-          <div className='spin-cta'>
-            <div>SPIN THE WHEEL TO GET YOUR % OFF!</div>
-            <Button onClick={this.spin}>Spin the wheel!</Button>
-          </div>
+          <SpinCTA>
+            Spin the <span>WHEEL</span> to get your <span>OFFER</span>!
+          </SpinCTA>
           <div className='descr'>
-            {this.state.offer.partner.name}
-            <br />
-            <Icon type='compass' /> {this.state.offer.partner.address}
+            <div>{this.state.offer.partner.name}</div>
+            <div>
+              <Icon type='compass' /> {this.state.offer.partner.address}
+            </div>
           </div>
         </Section>
         <Section style={style}>
           <WheelWrapper>
-            <WheelPin
-              style={{ color: '#d12', fontSize: '48px' }}
-              type='caret-down'
-            />
-            <Wheel
-              className={cx({ [spin()]: this.state.spinning })}
-              src={wheel}
-              alt='wheel'
-              onAnimationEnd={this.stopSpin}
-              onClick={this.spin}
-            />
+            <svg ref={this.wheel} />
           </WheelWrapper>
         </Section>
       </>
@@ -181,40 +148,54 @@ class Offer extends React.PureComponent {
     fetch('/api/offers/dhaka/' + this.props.zone)
       .then(r => r.json())
       .then(reply => {
-        if (!reply.ok) this.setState({ offer: false })
+        console.log(reply)
+        if (!reply.ok) return this.setState({ offer: false })
         this.setState({ offer: reply.data })
+        return this.getCode(reply.data._id)
+      })
+      .then(code => {
+        window.wheel({
+          el: this.wheel.current,
+          data: this.state.offer.offers[this.props.type].values,
+          mode: 'online',
+          radius: Math.floor(
+            Math.min(window.innerHeight, window.innerWidth) * 0.22
+          ),
+          url: '/api/codes/' + code.code,
+          onSuccess: win => {
+            this.showQR(code.code, this.props.type)
+          }
+        })
       })
   }
 
-  spin = e => {
-    e.preventDefault()
-    this.getQr(this.state.offer._id)
-    this.setState({ spinning: true })
-  }
-
-  stopSpin = e => {
-    this.setState({ spinning: false })
-    setTimeout(this.showQR(this.state.qr.qr, this.state.qr.code), 500)
-  }
-
-  getQr = id =>
-    fetch('/api/codes/' + id, {
+  getCode = id =>
+    fetch('/api/codes/' + id + '/' + this.props.type, {
       credentials: 'include'
     })
       .then(r => {
-        if (r.status === 401) navigate('/login')
+        if (r.status === 401) {
+          throw new Error('Unauthorized')
+        }
         return r.json()
       })
       .then(res => {
-        if (!res.ok) this.setState({ offer: false })
-        this.setState({ qr: res.data })
+        if (!res.ok) {
+          this.setState({ offer: false })
+        }
+        return res.data
+      })
+      .catch(e => {
+        if (e.message === 'Unauthorized') navigate('/login')
+        else console.error(e)
       })
 
-  showQR = (qr, code) => e => qrModal(qr, code)
+  showQR = (code, type) => qrModal(code, type)
 
   static propTypes = {
     style: PropTypes.object,
-    zone: PropTypes.string.isRequired
+    zone: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired
   }
 }
 

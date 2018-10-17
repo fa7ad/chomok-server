@@ -67,6 +67,11 @@ Partner.Scan = Loadable({
   loader: _ => import('./pages/_partner/Scan')
 })
 
+export const OfferType = Loadable({
+  loading,
+  loader: _ => import('./pages/OfferType')
+})
+
 export const Offer = Loadable({
   loading,
   loader: _ => import('./pages/Offer')
