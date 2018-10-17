@@ -77,7 +77,8 @@ app.use('/api/zones', zonesController)
 app.use('/api/offers', offersController)
 app.use('/api/codes', verifyLogin, codesController)
 app.use('/images', imagesController)
-app.use(/^\/about|admin|contact|login|partner|offer|register/, (req, res) => {
+const clients = 'about|admin|contact|login|partner|offer|register'
+app.use(clients.split('|').map(x => '/' + x + '*'), (req, res) => {
   res.sendFile(path.join(env.client, 'index.html'))
 })
 app.use(function (err, req, res, next) {
