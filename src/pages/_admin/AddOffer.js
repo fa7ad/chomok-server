@@ -67,9 +67,6 @@ class AddOffer extends React.PureComponent {
       const { offers } = this.state
 
       const body = JSON.stringify(merge(data, { offers }))
-
-      console.log(body)
-
       fetch('/api/offers', {
         credentials: 'include',
         method: 'POST',
