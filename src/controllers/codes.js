@@ -70,10 +70,10 @@ route.get('/:promoid', verifyLogin, async (req, res) => {
   }
 })
 
-route.post('/:promoid', async (req, res, next) => {
+route.post('/:promoid', verifyLogin, async (req, res, next) => {
   try {
-    if (!req.user.type === 'partner') {
-      throw new HTTPError(401, 'Only partners are allowed to verify')
+    if (!req.user?.type === 'partner') {
+      throw new HTTPError(403, 'Only partners are allowed to verify')
     }
     const code = await codesdb.get(req.params.promoid)
     if (!code) throw new HTTPError(404, 'Invalid promo code')
@@ -82,7 +82,10 @@ route.post('/:promoid', async (req, res, next) => {
       const useBy = uniq([...offer.useBy, code.userid])
 
       await offersdb.put(merge(offer, { useBy }))
-      res.json({ ok: true, data: { value: code.value } })
+
+      const { offertype, validity } = code
+      const value = code.offers[code.value]
+      res.json({ ok: true, data: { offertype, value, validity } })
     } else throw new HTTPError(400, 'Invalid/expired promo code')
   } catch (err) {
     next(err)
