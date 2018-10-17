@@ -148,7 +148,6 @@ class Offer extends React.PureComponent {
     fetch('/api/offers/dhaka/' + this.props.zone)
       .then(r => r.json())
       .then(reply => {
-        console.log(reply)
         if (!reply.ok) return this.setState({ offer: false })
         this.setState({ offer: reply.data })
         return this.getCode(reply.data._id)
@@ -156,7 +155,10 @@ class Offer extends React.PureComponent {
       .then(code => {
         window.wheel({
           el: this.wheel.current,
-          data: this.state.offer.offers[this.props.type].values,
+          data: this.state.offer.offers[this.props.type].values.map((v, i) => ({
+            text: v,
+            chance: i === code.value ? 100 : 1
+          })),
           clockwise: false,
           limit: 1,
           mode: 'online',
