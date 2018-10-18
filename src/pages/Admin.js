@@ -4,8 +4,6 @@ import styled, { css } from 'react-emotion'
 import { navigate, Link } from '@reach/router'
 import { Layout, Menu, Icon } from 'antd'
 
-import logoImg from '../img/logo.png'
-
 const { Header, Content, Footer: Foot, Sider } = Layout
 
 const Logo = styled('img')`
@@ -78,7 +76,7 @@ class Admin extends React.PureComponent {
           collapsed={this.state.collapsed}
           onCollapse={this.onCollapse}>
           <Link to='/'>
-            <Logo src={logoImg} alt='Chomok Logo' />
+            <Logo src='/images/logo.png' alt='Chomok Logo' />
           </Link>
           <Menu
             theme='dark'
