@@ -5,7 +5,7 @@ export default styled('img')`
   position: absolute;
   cursor: pointer;
   top: 2px;
-  left: calc(50% - 35px);
+  left: calc(50% - 40px);
   z-index: 2;
 
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);

@@ -3,12 +3,12 @@ import { Modal } from 'antd'
 import QrCode from 'qrcode.react'
 import PropTypes from 'prop-types'
 import { css } from 'react-emotion'
-import { Link } from '@reach/router'
+import { navigate } from '@reach/router'
 import { map, filter, keys } from 'ramda'
 
 import { Wrapper, Box } from './NotFound'
 import Loading from '../components/Loading'
-import { Section, button } from '../components/Layout'
+import { Section, ButtonLink } from '../components/Layout'
 
 const offerType = css`
   flex-basis: 100%;
@@ -34,16 +34,17 @@ class OfferType extends React.PureComponent {
 
   render () {
     const { style, zone } = this.props
+    const { types, loading } = this.state
 
-    if (this.state.loading) return <Loading />
+    if (loading) return <Loading />
 
-    return this.state.types.length > 0 ? (
+    return types.length > 0 ? (
       <Section style={style} className={offerType}>
         <h1>Select an offer type</h1>
-        {this.state.types.map((type, idx) => (
-          <Link className={button} to={`/offer/${zone}/${type.key}`} key={idx}>
-            {type.caption.toUpperCase()}
-          </Link>
+        {types.map((type, idx) => (
+          <ButtonLink to={`/offer/${zone}/${type.key}`} key={idx}>
+            {type.caption}
+          </ButtonLink>
         ))}
       </Section>
     ) : (
@@ -92,7 +93,10 @@ class OfferType extends React.PureComponent {
           <pre>{data.code}</pre>
           <h3>Type: {this.dict[data.offertype]}</h3>
         </div>
-      )
+      ),
+      onOk () {
+        navigate('/')
+      }
     })
 
   static propTypes = {

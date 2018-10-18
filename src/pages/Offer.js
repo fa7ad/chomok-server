@@ -69,6 +69,7 @@ const SpinCTA = styled('div')`
   color: #fff;
   span {
     background-color: #fff;
+    border: 2px solid #fff;
     color: rgba(0, 0, 0, 0.85);
   }
 `
@@ -101,7 +102,9 @@ class Offer extends React.PureComponent {
 
   render () {
     const { zone, style } = this.props
-    if (!this.state.offer) {
+    const { offer } = this.state
+
+    if (!offer) {
       return (
         <Wrapper style={style}>
           <Box>
@@ -111,7 +114,7 @@ class Offer extends React.PureComponent {
       )
     }
 
-    if (this.state.offer === 'loading') return <Loading />
+    if (offer === 'loading') return <Loading />
 
     return (
       <>
@@ -121,17 +124,17 @@ class Offer extends React.PureComponent {
             <span>{zone}</span>
           </Zone>
           <HexImg
-            data-bg={this.state.offer.image}
-            data-size='40vmin'
+            data-bg={offer.image}
+            data-size='45vmin'
             className='hex-img'
           />
           <SpinCTA>
-            Spin the <span>WHEEL</span> to get your <span>OFFER</span>!
+            Spin the <span>WHEEL</span> to get your <span>OFFER!</span>
           </SpinCTA>
           <div className='descr'>
-            <div>{this.state.offer.partner.name}</div>
+            <div>{offer.partner.name}</div>
             <div>
-              <Icon type='compass' /> {this.state.offer.partner.address}
+              <Icon type='compass' /> {offer.partner.address}
             </div>
           </div>
         </Section>
@@ -145,7 +148,8 @@ class Offer extends React.PureComponent {
   }
 
   componentDidMount () {
-    fetch('/api/offers/dhaka/' + this.props.zone)
+    const { type, zone } = this.props
+    fetch('/api/offers/dhaka/' + zone)
       .then(r => r.json())
       .then(reply => {
         if (!reply.ok) return this.setState({ offer: false })
@@ -153,21 +157,21 @@ class Offer extends React.PureComponent {
         return this.getCode(reply.data._id)
       })
       .then(code => {
+        const { offers } = this.state.offer
         window.wheel({
           el: this.wheel.current,
-          data: this.state.offer.offers[this.props.type].values.map((v, i) => ({
+          data: offers[type].values.map((v, i) => ({
             text: v,
             chance: i === code.value ? 100 : 1
           })),
           clockwise: false,
           limit: 1,
           mode: 'online',
-          radius: Math.floor(
-            Math.min(window.innerHeight, window.innerWidth) * 0.22
-          ),
+          theme: 'light',
+          radius: Math.max(window.innerHeight, window.innerWidth) * 0.22 | 0,
           url: '/api/codes/' + code.code,
           onSuccess: win => {
-            this.showQR(code.code, this.props.type)
+            this.showQR(code.code, type)
           }
         })
       })
