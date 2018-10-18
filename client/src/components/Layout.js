@@ -1,17 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Link } from '@reach/router'
 import styled, { css, cx } from 'react-emotion'
 
 export const cdark = css`
   background: rgba(0, 0, 0, 0.45);
   color: #fff;
-  h1, h2, h3, h4, h5 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
     color: #fefefe;
   }
 `
 
 export const cnophone = css`
-  @media (max-width: 640px) {
+  @media (max-width: 639px) {
     flex-basis: 100%;
     display: none;
   }
@@ -38,12 +43,12 @@ export const Section = styled(Sec)`
   justify-content: center;
   align-items: center;
   transition: all 300ms ease;
-  @media (max-width: 640px) {
+  @media (max-width: 639px) {
     flex-basis: 100%;
   }
 `
 
-export const Button = styled('button')`
+const btn = type => styled(type)`
   text-transform: uppercase;
   font-family: Montserrat, sans-serif;
   padding: 10px;
@@ -51,32 +56,34 @@ export const Button = styled('button')`
   color: #fff;
   cursor: pointer;
   outline: none;
-  transition: all 250ms ease;
-  background-color: transparent;
-  background-size: 100% 200%;
-  background-image: linear-gradient(to bottom, transparent 50%, white 50%);
-
+  transition: background-position 250ms ease, background-color 225ms 50ms ease;
+  background: transparent linear-gradient(to bottom, #fff 50%, transparent 50%)
+    0 100%/100% 200% no-repeat;
   &:hover {
     color: #333;
-    background-position: 0 -100%;
+    background-color: #fff;
+    background-position: 0 0;
   }
 `
 
-export const button = css`
+export const Button = btn('button')
+export const ButtonLink = btn(Link)
+
+export const Heading = styled('h1')`
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 900;
+  font-size: 4em;
+  color: #fefefe;
+  text-transform: uppercase;
+`
+
+export const Content = styled('div')`
+  width: 75%;
+  text-align: justify;
   text-transform: uppercase;
   font-family: Montserrat, sans-serif;
-  padding: 10px;
-  border: solid 2px #fff;
-  color: #fff;
-  cursor: pointer;
-  outline: none;
-  transition: all 250ms ease;
-  background-color: transparent;
-  background-size: 100% 200%;
-  background-image: linear-gradient(to bottom, transparent 50%, white 50%);
+  margin-bottom: 1.5em;
 
-  &:hover {
-    color: #333;
-    background-position: 0 -100%;
-  }
+  max-height: 50vh;
+  overflow: hidden;
 `

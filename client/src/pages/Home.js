@@ -1,9 +1,8 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 
-import { Section } from '../components/Layout'
 import { NavContainer, NavItem } from '../components/HexNav'
-import { Heading, Button, Content } from '../components/AboutSection'
+import { Section, Heading, ButtonLink, Content } from '../components/Layout'
 
 const Home = ({ navItems, style }) => (
   <>
@@ -28,7 +27,7 @@ const Home = ({ navItems, style }) => (
         EGET JUSTO. FUSCE ULTRICES ENIM VEL IPSUM BIBENDUM, SED ACCUMSAN METUS
         DICTUM.
       </Content>
-      <Button to='/about'>Learn more!</Button>
+      <ButtonLink to='/about'>Learn more!</ButtonLink>
     </Section>
   </>
 )
