@@ -53,6 +53,14 @@ Admin.AddAdmin = Loadable({
   loading,
   loader: _ => import('./pages/_admin/AddAdmin')
 })
+Admin.Logo = Loadable({
+  loading,
+  loader: _ => import('./pages/_admin/Logo')
+})
+Admin.Background = Loadable({
+  loading,
+  loader: _ => import('./pages/_admin/Background')
+})
 
 export const Partner = Loadable({
   loading,

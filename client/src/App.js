@@ -23,9 +23,6 @@ import {
   Partner
 } from './asyncRoutes'
 
-// Resources
-import logoImg from './img/logo.png'
-
 const w100 = css`
   width: 100%;
   max-width: 500px;
@@ -77,6 +74,8 @@ class App extends React.PureComponent {
     { key: 'add-partner', name: 'ADD PARTNER', icon: 'usergroup-add' },
     { key: 'admins', name: 'ADMINS', icon: 'user' },
     { key: 'add-admin', name: 'ADD ADMIN', icon: 'user-add' },
+    { key: 'logo', name: 'CHANGE LOGO', icon: 'cloud-upload' },
+    { key: 'bg', name: 'BACKGROUND', icon: 'picture' },
     { key: 'logout', name: 'LOGOUT', icon: 'logout' }
   ]
 
@@ -151,7 +150,7 @@ class App extends React.PureComponent {
           <Link to='/contact'>Contact Us</Link>
         </BurgerMenu>
         <Link to='/'>
-          <Logo src={logoImg} alt='Chomok Logo' />
+          <Logo src='/images/logo.png' alt='Chomok Logo' />
         </Link>
         {!/login|register/.test(location.href) && (
           <Dropdown
@@ -226,6 +225,10 @@ class App extends React.PureComponent {
         return <Admin.Admins />
       case 'add-admin':
         return <Admin.AddAdmin />
+      case 'logo':
+        return <Admin.Logo />
+      case 'bg':
+        return <Admin.Background />
       case 'logout':
         fetch('/api/logout', { credentials: 'include' })
           .then(r => r.json())
