@@ -10,14 +10,6 @@ export default styled(Icon)`
   z-index: 2;
   display: block;
 
-  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.25));
   transition: all 250ms ease;
   padding: 5px;
-  border-radius: 50%;
-  background-color: rgba(214, 0, 88, 0.25);
-
-  &:hover {
-    filter: none;
-    background-color: #CC0058;
-  }
 `

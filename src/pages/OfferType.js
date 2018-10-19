@@ -8,7 +8,7 @@ import { map, filter, keys } from 'ramda'
 
 import { Wrapper, Box } from './NotFound'
 import Loading from '../components/Loading'
-import { Section, ButtonLink } from '../components/Layout'
+import { Section, ButtonLink, qrmodal } from '../components/Layout'
 
 const offerType = css`
   flex-basis: 100%;
@@ -84,15 +84,25 @@ class OfferType extends React.PureComponent {
       .catch(console.error)
   }
 
+  download = e => {
+    const data = e.target.toDataURL('image/png')
+    const a = document.createElement('a')
+    a.href = data
+    a.download = 'qrcode.png'
+    a.click()
+  }
+
   showData = data =>
     Modal.info({
       title: 'You already got a code!',
+      className: qrmodal,
       content: (
-        <div>
-          <QrCode value={'chomok://' + data.code} />
+        <>
+          <QrCode value={'chomok://' + data.code} onClick={this.download} />
           <pre>{data.code}</pre>
+          <em>Click on the QR code to save for later</em>
           <h3>Type: {this.dict[data.offertype]}</h3>
-        </div>
+        </>
       ),
       onOk () {
         navigate('/')

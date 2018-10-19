@@ -9,25 +9,31 @@
 
 /* Color/shape of burger icon bars */
 .bm-burger-bars {
-  background: #000;
-  box-shadow: 0 0 2px rgba(200, 200, 200, 0.75);
-  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.85);
 }
 
 /* Position and sizing of clickable cross button */
 .bm-cross-button {
   height: 24px;
   width: 24px;
+  position: relative;
 }
+.bm-cross-button::after {
+  position: absolute;
+  content: 'CLOSE';
+  right: 24px;
+  bottom: 0;
+}
+
 
 /* Color/shape of close button cross */
 .bm-cross {
-  background: #bdc3c7;
+  background: #fff;
 }
 
 /* General sidebar styles */
 .bm-menu {
-  background: #373a47;
+  background: rgba(0, 0, 0, 0.45);
   padding: 2.5em 1.5em 0;
   font-size: 1.15em;
 }
@@ -39,7 +45,7 @@
 
 /* Wrapper for item list */
 .bm-item-list {
-  color: #b8b7ad;
+  color: #fff;
   padding: 0.8em;
 }
 
