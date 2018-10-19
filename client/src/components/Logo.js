@@ -8,7 +8,7 @@ export default styled('img')`
   left: calc(50% - 40px);
   z-index: 2;
 
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.45);
   border-radius: 50%;
 
   transition: transform 250ms ease;

@@ -10,14 +10,13 @@ export const Wrapper = styled('div')`
 
 export const Box = styled('div')`
   background-color: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.85);
-  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
   padding: 20px;
   width: 50%;
   max-width: 480px;
 
   h1 {
-    font-weight: 900;
+    font-weight: 400;
   }
   h2 {
     font-weight: 400;

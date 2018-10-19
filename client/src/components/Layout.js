@@ -71,7 +71,6 @@ export const ButtonLink = btn(Link)
 
 export const Heading = styled('h1')`
   font-family: 'Source Sans Pro', sans-serif;
-  font-weight: 900;
   font-size: 4em;
   color: #fefefe;
   text-transform: uppercase;
@@ -86,4 +85,52 @@ export const Content = styled('div')`
 
   max-height: 50vh;
   overflow: hidden;
+`
+
+export const qrmodal = css`
+  .ant-modal-content {
+    background: rgba(0, 0, 0, 0.65);
+    text-align: center;
+    border-radius: 0;
+  }
+  .ant-modal-confirm-content,
+  .ant-modal-confirm-title,
+  h3,
+  pre,
+  span {
+    color: #fff;
+  }
+
+  .ant-modal-confirm-body-wrapper {
+    border: 4px solid #fff;
+    padding: 20px;
+  }
+
+  .ant-modal-confirm-btns {
+    float: none;
+  }
+
+  .ant-modal-confirm-content {
+    margin-left: 0 !important;
+    text-align: center;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  .ant-btn {
+    background: #fff;
+    border-radius: 0;
+    border: none;
+    padding: 0 40px;
+    &,
+    & span {
+      color: #111;
+    }
+  }
+
+  i.anticon {
+    margin-right: 0;
+  }
 `

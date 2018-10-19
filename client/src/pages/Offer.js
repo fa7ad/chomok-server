@@ -1,13 +1,13 @@
 import React from 'react'
+import QrCode from 'qrcode.react'
 import PropTypes from 'prop-types'
 import { Icon, Modal } from 'antd'
 import { navigate } from '@reach/router'
 import styled, { css } from 'react-emotion'
-import QrCode from 'qrcode.react'
 
-import { Section } from '../components/Layout'
 import { Wrapper, Box } from './NotFound'
 import Loading from '../components/Loading'
+import { Section, qrmodal } from '../components/Layout'
 
 const section = css`
   &&& {
@@ -52,17 +52,6 @@ const WheelWrapper = styled('div')`
   align-items: center;
 `
 
-const qrmodal = css`
-  .ant-confirm-content {
-    margin-left: 0 !important;
-    text-align: center;
-
-    img {
-      width: 100%;
-    }
-  }
-`
-
 const SpinCTA = styled('div')`
   font-size: 1.5em;
   margin: 15px auto;
@@ -80,12 +69,21 @@ function qrModal (code, type) {
     special: 'Special Offer',
     bulk: 'Bulk Discount'
   }
+  const download = e => {
+    const data = e.target.toDataURL('image/png')
+    const a = document.createElement('a')
+    a.href = data
+    a.download = 'qrcode.png'
+    a.click()
+  }
+
   Modal.info({
     title: 'Show this code to the partner',
     content: (
       <>
-        <QrCode value={'chomok://' + code} />
+        <QrCode value={'chomok://' + code} onClick={download} />
         <pre>{code}</pre>
+        <em>Click on the QR code to save for later</em>
         <h3>Type: {dict[type]}</h3>
       </>
     ),
@@ -97,6 +95,8 @@ class Offer extends React.PureComponent {
   state = {
     offer: 'loading'
   }
+
+  showQR = qrModal
 
   wheel = React.createRef()
 
@@ -168,7 +168,8 @@ class Offer extends React.PureComponent {
           limit: 1,
           mode: 'online',
           theme: 'light',
-          radius: Math.max(window.innerHeight, window.innerWidth) * 0.22 | 0,
+          duration: 1200,
+          radius: (0.22 * Math.max(window.innerHeight, window.innerWidth)) | 0,
           url: '/api/codes/' + code.code,
           onSuccess: win => {
             this.showQR(code.code, type)
@@ -177,28 +178,23 @@ class Offer extends React.PureComponent {
       })
   }
 
-  getCode = id =>
-    fetch('/api/codes/' + id + '/' + this.props.type, {
-      credentials: 'include'
-    })
-      .then(r => {
-        if (r.status === 401) {
-          throw new Error('Unauthorized')
-        }
-        return r.json()
+  getCode = async id => {
+    try {
+      const { type } = this.props
+      const r = await fetch(`/api/codes/${id}/${type}`, {
+        credentials: 'include'
       })
-      .then(res => {
-        if (!res.ok) {
-          this.setState({ offer: false })
-        }
-        return res.data
-      })
-      .catch(e => {
-        if (e.message === 'Unauthorized') navigate('/login')
-        else console.error(e)
-      })
+      if (r.status === 401) throw new Error(401)
 
-  showQR = (code, type) => qrModal(code, type)
+      const res = await r.json()
+      if (!res.ok) this.setState({ offer: false })
+
+      return res.data
+    } catch (e) {
+      if (e.message === 401) navigate('/login')
+      console.error(e)
+    }
+  }
 
   static propTypes = {
     style: PropTypes.object,
