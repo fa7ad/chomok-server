@@ -41,7 +41,7 @@ route.post('/', verifyAuthorized, up.single('file'), async function (
       .toFile(original + '.png')
 
     await fs.unlink(original)
-    res.send(env.url + '/images/' + req.file.filename + '.png')
+    res.send(`/images/${req.file.filename}.png`)
   } catch (err) {
     next(err)
   }
@@ -64,7 +64,7 @@ route.post('/logo', verifyAdmin, up.single('file'), async function (
       .png({ progressive: true })
       .toFile(logo)
     await fs.unlink(original)
-    res.send(env.url + '/images/logo.png')
+    res.send('/images/logo.png')
   } catch (err) {
     next(err)
   }
@@ -92,7 +92,7 @@ route.post('/bg', verifyAdmin, up.single('file'), async function (
     files.push({
       id: (new Date() / 1e3) | 0,
       file: original + '.jpg',
-      link: env.url + '/images/' + req.file.filename + '.jpg'
+      link: `/images/${req.file.filename}.jpg`
     })
     while (files.length > 7) {
       const old = files.shift()

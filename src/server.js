@@ -29,15 +29,15 @@ const app = express()
 
 const MemorySession = memsess(session)
 const sess = {
-  secret: 'monkey 13',
+  secret: env.secret,
   rolling: true,
   resave: false,
   saveUninitialized: true,
   store: new MemorySession({
-    checkPeriod: 7.2e6 // 2 hrs
+    checkPeriod: 1.296e8 // 1.5 days
   }),
   cookie: {
-    maxAge: 6e5 // 10 mins
+    maxAge: 8.64e7 // 1 day
   }
 }
 
@@ -49,7 +49,7 @@ app.use(cors())
 if (env.prod) {
   Object.assign(sess, {
     proxy: true,
-    cookie: { secure: true, domain: '.chomok.xyz', maxAge: 6e5 }
+    cookie: { secure: true, domain: '.chomok.xyz', maxAge: 8.64e7 }
   })
   app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal'])
 }

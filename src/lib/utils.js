@@ -12,8 +12,10 @@ PouchDB.plugin(PouchFind)
 const cwd = resolve(process.cwd() || __dirname)
 const prod = process.env.NODE_ENV === 'production'
 const port = process.env.PORT || 3333
+const secret = process.env.SECRET || '14 monkeysw'
 
 export const env = {
+  secret,
   port,
   db_prefix: process.env.DB_PREFIX || 'ch_',
   prod,
