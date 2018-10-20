@@ -1,5 +1,5 @@
 import React from 'react'
-import QrCode from 'qrcode.react'
+import { TheQr } from 'the-qr'
 import PropTypes from 'prop-types'
 import { Icon, Modal } from 'antd'
 import { navigate } from '@reach/router'
@@ -63,42 +63,19 @@ const SpinCTA = styled('div')`
   }
 `
 
-function qrModal (code, type) {
-  const dict = {
+class Offer extends React.PureComponent {
+  state = {
+    offer: 'loading',
+    qr: null
+  }
+
+  wheel = React.createRef()
+
+  dict = {
     perc: 'Percentage Off',
     special: 'Special Offer',
     bulk: 'Bulk Discount'
   }
-  const download = e => {
-    const data = e.target.toDataURL('image/png')
-    const a = document.createElement('a')
-    a.href = data
-    a.download = 'qrcode.png'
-    a.click()
-  }
-
-  Modal.info({
-    title: 'Show this code to the partner',
-    content: (
-      <>
-        <QrCode value={'chomok://' + code} onClick={download} />
-        <pre>{code}</pre>
-        <em>Click on the QR code to save for later</em>
-        <h3>Type: {dict[type]}</h3>
-      </>
-    ),
-    className: qrmodal
-  })
-}
-
-class Offer extends React.PureComponent {
-  state = {
-    offer: 'loading'
-  }
-
-  showQR = qrModal
-
-  wheel = React.createRef()
 
   render () {
     const { zone, style } = this.props
@@ -147,54 +124,90 @@ class Offer extends React.PureComponent {
     )
   }
 
-  componentDidMount () {
-    const { type, zone } = this.props
-    fetch('/api/offers/dhaka/' + zone)
-      .then(r => r.json())
-      .then(reply => {
-        if (!reply.ok) return this.setState({ offer: false })
-        this.setState({ offer: reply.data })
-        return this.getCode(reply.data._id)
-      })
-      .then(code => {
-        const { offers } = this.state.offer
-        window.wheel({
-          el: this.wheel.current,
-          data: offers[type].values.map((v, i) => ({
-            text: v,
-            chance: i === code.value ? 100 : 1
-          })),
-          clockwise: false,
-          limit: 1,
-          mode: 'online',
-          theme: 'light',
-          duration: 1200,
-          radius: (0.22 * Math.max(window.innerHeight, window.innerWidth)) | 0,
-          url: '/api/codes/' + code.code,
-          onSuccess: win => {
-            this.showQR(code.code, type)
-          }
-        })
-      })
-  }
-
-  getCode = async id => {
+  async componentDidMount () {
     try {
-      const { type } = this.props
-      const r = await fetch(`/api/codes/${id}/${type}`, {
-        credentials: 'include'
+      const { type, zone } = this.props
+      const reply = await fetch(`/api/offers/dhaka/${zone}`).then(r => r.json())
+
+      if (!reply.ok) return this.setState({ offer: false })
+      this.setState({ offer: reply.data })
+      const code = await this.getCode(reply.data._id, type)
+      const { offers } = this.state.offer
+      window.wheel({
+        el: this.wheel.current,
+        data: offers[type].values.map((v, i) => ({
+          text: v,
+          chance: i === code.value ? 100 : 1
+        })),
+        clockwise: false,
+        limit: 1,
+        mode: 'online',
+        theme: 'light',
+        duration: 1200,
+        radius: (0.22 * Math.max(window.innerHeight, window.innerWidth)) | 0,
+        url: `/api/codes/${code.code}`,
+        onSuccess: win => this.showData({ ...code, win })
       })
-      if (r.status === 401) throw new Error(401)
-
-      const res = await r.json()
-      if (!res.ok) this.setState({ offer: false })
-
-      return res.data
     } catch (e) {
-      if (e.message === 401) navigate('/login')
-      console.error(e)
+      if (e.message === 'login') navigate('/login')
+      console.error(e.stack)
     }
   }
+
+  getCode = async (id, type) => {
+    const r = await fetch(`/api/codes/${id}/${type}`, {
+      credentials: 'include'
+    })
+    if (r.status === 401) throw new Error('login')
+    const res = await r.json()
+    if (!res.ok) this.setState({ offer: false })
+
+    return res.data
+  }
+
+  download = e => {
+    const a = document.createElement('a')
+    a.href = this.state.qr
+    a.download = `qrcode-${Date.now()}.png`
+    a.click()
+  }
+
+  showData = data =>
+    Modal.info({
+      title: (
+        <>
+          <div>You have won {data.win.text} discount!</div>
+          <div>Here is your chomok code!</div>
+        </>
+      ),
+      className: qrmodal,
+      content: (
+        <>
+          <div>Please show this QR code to the restaurant.</div>
+          <TheQr
+            text={'chomok://' + data.code}
+            onClick={this.download}
+            onGenerate={this.saveQr}
+            alt={data.code}
+          />
+          <div>
+            <em>Click on the QR code to save for later</em>
+          </div>
+          <p>You can also show the following code</p>
+          <pre>{data.code}</pre>
+          <h3>Type: {this.dict[data.offertype]}</h3>
+        </>
+      ),
+      okButtonProps: {
+        onMouseDown: _ => {
+          this.download(_)
+          navigate('/')
+        }
+      },
+      okText: 'SAVE!'
+    })
+
+  saveQr = qr => this.setState({ qr })
 
   static propTypes = {
     style: PropTypes.object,
