@@ -33,7 +33,7 @@
 
 /* General sidebar styles */
 .bm-menu {
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.85);
   padding: 2.5em 1.5em 0;
   font-size: 1.15em;
 }
@@ -68,5 +68,5 @@ a.bm-item:hover {
 
 /* Styling of overlay */
 .bm-overlay {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.45);
 }

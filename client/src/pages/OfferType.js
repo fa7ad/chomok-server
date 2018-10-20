@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal } from 'antd'
-import QrCode from 'qrcode.react'
+import { TheQr } from 'the-qr'
 import PropTypes from 'prop-types'
 import { css } from 'react-emotion'
 import { navigate } from '@reach/router'
@@ -23,6 +23,7 @@ const offerType = css`
 class OfferType extends React.PureComponent {
   state = {
     loading: true,
+    qr: null,
     types: []
   }
 
@@ -85,22 +86,35 @@ class OfferType extends React.PureComponent {
   }
 
   download = e => {
-    const data = e.target.toDataURL('image/png')
     const a = document.createElement('a')
-    a.href = data
-    a.download = 'qrcode.png'
+    a.href = this.state.qr
+    a.download = `qrcode-${Date.now()}.png`
     a.click()
   }
 
   showData = data =>
     Modal.info({
-      title: 'You already got a code!',
+      title: (
+        <>
+          <div>You have a saved</div>
+          <div>chomok code!</div>
+        </>
+      ),
       className: qrmodal,
       content: (
         <>
-          <QrCode value={'chomok://' + data.code} onClick={this.download} />
+          <div>Please show this QR code to the restaurant.</div>
+          <TheQr
+            text={'chomok://' + data.code}
+            onClick={this.download}
+            onGenerate={this.saveQr}
+            alt={data.code}
+          />
+          <div>
+            <em>Click on the QR code to save for later</em>
+          </div>
+          <p>You can also show the following code</p>
           <pre>{data.code}</pre>
-          <em>Click on the QR code to save for later</em>
           <h3>Type: {this.dict[data.offertype]}</h3>
         </>
       ),
@@ -108,6 +122,8 @@ class OfferType extends React.PureComponent {
         navigate('/')
       }
     })
+
+  saveQr = qr => this.setState({ qr })
 
   static propTypes = {
     style: PropTypes.object,

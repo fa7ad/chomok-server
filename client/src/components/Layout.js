@@ -101,6 +101,22 @@ export const qrmodal = css`
     color: #fff;
   }
 
+  .ant-modal-confirm-content pre {
+    background-color: #fff;
+    color: #111;
+    display: inline-flex;
+    padding: 2px;
+  }
+
+  .ant-modal-confirm-content .the-qr {
+    margin: 15px auto;
+  }
+
+  .ant-modal-confirm-title {
+    text-transform: uppercase;
+    font-size: 1.3em;
+  }
+
   .ant-modal-confirm-body-wrapper {
     border: 4px solid #fff;
     padding: 20px;
@@ -132,5 +148,6 @@ export const qrmodal = css`
 
   i.anticon {
     margin-right: 0;
+    display: none;
   }
 `
