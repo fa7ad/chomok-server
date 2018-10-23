@@ -55,8 +55,8 @@ if (env.prod) {
 }
 
 app.use(session(sess))
-app.use(urlencoded({ limit: '5mb', extended: true }))
-app.use(json({ limit: '5mb', extended: true }))
+app.use(urlencoded({ extended: true }))
+app.use(json({ extended: true }))
 
 app.use(passport.initialize())
 app.use(passport.session())
