@@ -74,6 +74,7 @@ class App extends React.PureComponent {
     { key: 'add-partner', name: 'ADD PARTNER', icon: 'usergroup-add' },
     { key: 'admins', name: 'ADMINS', icon: 'user' },
     { key: 'add-admin', name: 'ADD ADMIN', icon: 'user-add' },
+    { key: 'users', name: 'USERS', icon: 'team' },
     { key: 'logo', name: 'CHANGE LOGO', icon: 'cloud-upload' },
     { key: 'bg', name: 'BACKGROUND', icon: 'picture' },
     { key: 'logout', name: 'LOGOUT', icon: 'logout' }
@@ -229,6 +230,8 @@ class App extends React.PureComponent {
         return <Admin.Logo />
       case 'bg':
         return <Admin.Background />
+      case 'users':
+        return <Admin.Users />
       case 'logout':
         fetch('/api/logout', { credentials: 'include' })
           .then(r => r.json())
