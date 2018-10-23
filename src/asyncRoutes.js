@@ -61,6 +61,10 @@ Admin.Background = Loadable({
   loading,
   loader: _ => import('./pages/_admin/Background')
 })
+Admin.Users = Loadable({
+  loading,
+  loader: _ => import('./pages/_admin/Users')
+})
 
 export const Partner = Loadable({
   loading,

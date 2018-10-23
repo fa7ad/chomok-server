@@ -42,36 +42,27 @@ class PartnerScan extends React.PureComponent {
     manual: ''
   }
 
-  handleScan = code => {
-    if (code.result) {
-      fetch(`/api/codes/${code.result.replace('chomok://', '')}`, {
+  handleScan = async code => {
+    try {
+      if (!code || !code.result) return
+      const qrcode = code.result.replace('chomok://', '')
+      const r = await fetch(`/api/codes/${qrcode}`, {
         method: 'POST',
         credentials: 'include'
       })
-        .then(r => {
-          if (r.status === 403 || r.status === 401) {
-            navigate('/login')
-            throw new Error('Unauthorized')
-          }
-          return r.json()
-        })
-        .then(res => {
-          if (res.ok) {
-            showQR(res.data)
-          } else throw new Error('Invalid code')
-        })
-        .catch(e => {
-          console.error(e)
-        })
+      if (r.status === 403 || r.status === 401) {
+        navigate('/login')
+        throw new Error('Unauthorized')
+      }
+      const res = await r.json()
+      if (res.ok) showQR(res.data)
+      else throw new Error('Invalid code')
+    } catch (err) {
+      console.error(err)
     }
   }
 
   render () {
-    // const previewStyle = {
-    //   width: '90%',
-    //   maxWidth: '480px',
-    //   margin: '0 auto'
-    // }
     const size = Math.min(300, (window.innerWidth * 0.75) | 0)
 
     return (
@@ -96,13 +87,9 @@ class PartnerScan extends React.PureComponent {
     )
   }
 
-  manualInput = e => {
-    this.setState({ manual: e.target.value })
-  }
+  manualInput = e => this.setState({ manual: e.target.value })
 
-  checkManual = e => {
-    this.handleScan(this.state.manual)
-  }
+  checkManual = e => this.handleScan(this.state.manual)
 }
 
 export default PartnerScan
