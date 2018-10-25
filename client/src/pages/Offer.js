@@ -133,18 +133,38 @@ class Offer extends React.PureComponent {
       this.setState({ offer: reply.data })
       const code = await this.getCode(reply.data._id, type)
       const { offers } = this.state.offer
+      const colors = [
+        '#C600D1',
+        '#45C2EE',
+        '#80EA52',
+        '#444652',
+        '#F4343F',
+        '#FF9000',
+        '#FFF639'
+      ]
+      const radius = (0.2 * Math.max(window.innerHeight, window.innerWidth)) | 0
       window.wheel({
         el: this.wheel.current,
-        data: offers[type].values.map((v, i) => ({
+        data: offers[type].values.filter(el => el !== null).map((v, i) => ({
           text: v,
-          chance: i === code.value ? 100 : 1
+          chance: i === code.value ? 100 : 1,
+          color: colors[i % colors.length]
         })),
         clockwise: false,
         limit: 1,
         mode: 'online',
-        theme: 'light',
-        duration: 1200,
-        radius: (0.22 * Math.max(window.innerHeight, window.innerWidth)) | 0,
+        color: {
+          border: '#f5f5f5',
+          prize: '#f5f5f5',
+          button: '#f5f5f5',
+          line: 'transparent',
+          prizeFont: '#fff',
+          buttonFont: '#111'
+        },
+        duration: 3e3,
+        buttonWidth: radius * 0.25,
+        buttonText: 'SPIN!',
+        radius,
         url: `/api/codes/${code.code}`,
         onSuccess: win => this.showData({ ...code, win })
       })
@@ -199,8 +219,8 @@ class Offer extends React.PureComponent {
         </>
       ),
       okButtonProps: {
-        onMouseDown: _ => {
-          this.download(_)
+        onMouseDown: e => {
+          this.download(e)
           navigate('/')
         }
       },
