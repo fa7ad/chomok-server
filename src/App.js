@@ -20,7 +20,8 @@ import {
   Login,
   Register,
   NotFound,
-  Partner
+  Partner,
+  ContactUs
 } from './asyncRoutes'
 
 const w100 = css`
@@ -110,6 +111,7 @@ class App extends React.PureComponent {
           </Partner>
           <Login path='/login' />
           <Register path='/register' />
+          <ContactUs path='/contact' />
           <NotFound default />
         </Router>
       </>
@@ -142,7 +144,11 @@ class App extends React.PureComponent {
   }
 
   getNavContent = ({ location }) => {
-    if (/admin|partner/.test(location.href)) return null
+    const page = location.pathname.split('/')[1] || 'home'
+    const auth = /login|register/.test(page)
+    const dash = /admin|partner/.test(page)
+    const us = /about/.test(page)
+    if (dash) return null
     return (
       <>
         <BurgerMenu outerContainerId='root' pageWrapId='page'>
@@ -153,13 +159,16 @@ class App extends React.PureComponent {
         <Link to='/'>
           <Logo src='/images/logo.png' alt='Chomok Logo' />
         </Link>
-        {!/login|register/.test(location.href) && (
-          <Dropdown
-            overlay={<Menu children={this.state.menuItems} />}
-            trigger={['click']}>
-            <UserIcon type='user' onMouseOver={this.getLoginState} />
-          </Dropdown>
-        )}
+        <Dropdown
+          overlay={<Menu>{this.state.menuItems}</Menu>}
+          trigger={['click']}>
+          <UserIcon
+            type='user'
+            fill={us ? '#111' : '#fff'}
+            onMouseOver={this.getLoginState}
+            style={auth ? { display: 'none' } : {}}
+          />
+        </Dropdown>
       </>
     )
   }

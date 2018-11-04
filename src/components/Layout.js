@@ -48,6 +48,54 @@ export const Section = styled(Sec)`
   }
 `
 
+export const Page = styled('div')`
+  flex-basis: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 85px;
+`
+
+Page.White = styled(Page)`
+  background-color: #fff;
+  color: #111;
+`
+
+export const Container = styled('main')`
+  width: 100%;
+  height: 100%;
+  max-width: 960px;
+  background: rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  @media screen and (min-width: 641px) {
+    margin-bottom: 85px;
+  }
+  &, h1, h2, h3, h4, h5 {
+    color: #fff;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    input, textarea{
+      max-width: 900px;
+      width: calc(100% - 10px);
+      margin: 1em 0;
+    }
+    button:last-child {
+      margin: 1em 0;
+    }
+  }
+  form input, form textarea, form button {
+    border-radius: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+  }
+`
+
 const btn = type => styled(type)`
   text-transform: uppercase;
   font-family: Montserrat, sans-serif;

@@ -6,22 +6,18 @@ import { cx } from 'emotion'
 
 const TransitionRouter = ({ children, ...p }) => (
   <Location
-    children={({ location }) => (
-      <TransitionGroup className='transition-group'>
-        <CSSTransition key={location.key} classNames='fade' timeout={100}>
-          <Router
-            location={location}
-            className={cx(
-              'router',
-              { admin: /admin/.test(location.href) },
-              { partner: /partner/.test(location.href) }
-            )}
-            {...p}>
-            {children}
-          </Router>
-        </CSSTransition>
-      </TransitionGroup>
-    )}
+    children={({ location }) => {
+      const page = location.pathname.split('/')[1] || 'home'
+      return (
+        <TransitionGroup className='transition-group'>
+          <CSSTransition key={location.key} classNames='fade' timeout={100}>
+            <Router location={location} className={cx('router', page)} {...p}>
+              {children}
+            </Router>
+          </CSSTransition>
+        </TransitionGroup>
+      )
+    }}
   />
 )
 
