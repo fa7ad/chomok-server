@@ -104,6 +104,11 @@ export const Register = Loadable({
   loader: _ => import('./pages/Register')
 })
 
+export const AboutUs = Loadable({
+  loading,
+  loader: _ => import('./pages/About')
+})
+
 export const ContactUs = Loadable({
   loading,
   loader: _ => import('./pages/Contact')

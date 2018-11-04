@@ -48,19 +48,44 @@ export const Section = styled(Sec)`
   }
 `
 
-export const Page = styled('div')`
+const Page = styled('div')`
   flex-basis: 100%;
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 85px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  .empty {
+    min-height: 85px;
+    width: 100%;
+    background-color: red;
+    display: block;
+    visibility: hidden;
+  }
 `
 
 Page.White = styled(Page)`
   background-color: #fff;
   color: #111;
+  text-align: justify;
+  h3 {
+    font-size: 2em;
+  }
+  img {
+    max-height: 200px;
+  }
+  .contacts img {
+    height: 64px;
+    margin: 0 5px;
+  }
+  .row {
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
 `
+
+export { Page }
 
 export const Container = styled('main')`
   width: 100%;
@@ -73,14 +98,20 @@ export const Container = styled('main')`
   @media screen and (min-width: 641px) {
     margin-bottom: 85px;
   }
-  &, h1, h2, h3, h4, h5 {
+  &,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
     color: #fff;
   }
   form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    input, textarea{
+    input,
+    textarea {
       max-width: 900px;
       width: calc(100% - 10px);
       margin: 1em 0;
@@ -89,7 +120,9 @@ export const Container = styled('main')`
       margin: 1em 0;
     }
   }
-  form input, form textarea, form button {
+  form input,
+  form textarea,
+  form button {
     border-radius: 0;
     background: rgba(0, 0, 0, 0.5);
     color: #fff;
