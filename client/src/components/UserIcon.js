@@ -12,4 +12,7 @@ export default styled(Icon)`
 
   transition: all 250ms ease;
   padding: 5px;
+  svg {
+    fill: ${p => p.fill};
+  }
 `

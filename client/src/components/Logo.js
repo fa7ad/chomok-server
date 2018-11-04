@@ -8,11 +8,11 @@ export default styled('img')`
   left: calc(50% - 40px);
   z-index: 2;
 
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.45);
-  border-radius: 50%;
-
-  transition: transform 250ms ease;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.45));
+  transform-origin: top center;
+  backface-visibility: hidden;
+  transition: transform 100ms ease;
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.08) translateZ(2em);
   }
 `
