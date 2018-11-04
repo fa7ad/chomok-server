@@ -21,7 +21,8 @@ import {
   Register,
   NotFound,
   Partner,
-  ContactUs
+  ContactUs,
+  AboutUs
 } from './asyncRoutes'
 
 const w100 = css`
@@ -111,6 +112,7 @@ class App extends React.PureComponent {
           </Partner>
           <Login path='/login' />
           <Register path='/register' />
+          <AboutUs path='/about' />
           <ContactUs path='/contact' />
           <NotFound default />
         </Router>
