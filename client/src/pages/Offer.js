@@ -185,13 +185,6 @@ class Offer extends React.PureComponent {
     return res.data
   }
 
-  download = e => {
-    const a = document.createElement('a')
-    a.href = this.state.qr
-    a.download = `qrcode-${Date.now()}.png`
-    a.click()
-  }
-
   showData = data =>
     Modal.info({
       title: (
@@ -219,10 +212,7 @@ class Offer extends React.PureComponent {
         </>
       ),
       okButtonProps: {
-        onMouseDown: e => {
-          this.download(e)
-          navigate('/')
-        }
+        onMouseDown: e => navigate('/')
       },
       okText: 'SAVE!'
     })
