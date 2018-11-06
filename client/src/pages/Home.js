@@ -11,7 +11,7 @@ const Home = ({ navItems, style }) => (
         {navItems.map((it, idx) => (
           <Fragment key={it._id}>
             {idx > 0 && idx % 2 === 0 ? <div /> : null}
-            <NavItem to={`/offer/${it.name}`}>{it.name}</NavItem>
+            <NavItem to={`/offer/${it.name}/perc`}>{it.name}</NavItem>
           </Fragment>
         ))}
       </NavContainer>
