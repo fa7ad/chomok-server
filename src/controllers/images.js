@@ -9,6 +9,8 @@ import { env, HTTPError, findLike } from '../lib/utils'
 
 const dest = path.join(env.cwd, 'uploads')
 
+sharp.cache(false)
+
 const up = multer({
   dest,
   fileFilter: function (req, file, cb) {
@@ -31,16 +33,18 @@ route.post('/', verifyAuthorized, up.single('file'), async function (
   try {
     if (!req.file) throw new HTTPError(500, 'Image upload failed')
 
-    const original = path.resolve(req.file.path)
+    console.log(req.file)
+    const originalFile = path.resolve(req.file.path)
+    const original = await fs.readFile(originalFile)
     await sharp(original)
       .resize(1280, null, { withoutEnlargement: true })
       .png({
         progressive: true,
         compressionLevel: 9
       })
-      .toFile(original + '.png')
+      .toFile(originalFile + '.png')
 
-    await fs.unlink(original)
+    await fs.unlink(originalFile)
     res.send(`/images/${req.file.filename}.png`)
   } catch (err) {
     next(err)
@@ -55,15 +59,15 @@ route.post('/logo', verifyAdmin, up.single('file'), async function (
   try {
     if (!req.file) throw new HTTPError(500, 'Image upload failed')
 
-    const original = path.resolve(req.file.path)
+    const file = path.resolve(req.file.path)
+    const original = fs.readFile(file)
     const logo = path.join(dest, 'logo.png')
-
-    await fs.unlink(logo)
+    if (await fs.exists(logo)) await fs.unlink(logo)
     await sharp(original)
       .resize(100, null, { withoutEnlargement: true })
       .png({ progressive: true })
       .toFile(logo)
-    await fs.unlink(original)
+    await fs.unlink(file)
     res.send('/images/logo.png')
   } catch (err) {
     next(err)
@@ -80,18 +84,19 @@ route.post('/bg', verifyAdmin, up.single('file'), async function (
     const bgs = path.join(dest, 'bg.json')
     const files = await fs.readJSON(bgs)
 
-    const original = path.resolve(req.file.path)
+    const originalFile = path.resolve(req.file.path)
+    const original = await fs.readFile(originalFile)
     await sharp(original)
       .resize(1920, null, { withoutEnlargement: true })
       .jpeg({
         progressive: true,
         quality: 95
       })
-      .toFile(original + '.jpg')
-    await fs.unlink(original)
+      .toFile(originalFile + '.jpg')
+    await fs.unlink(originalFile)
     files.push({
       id: (new Date() / 1e3) | 0,
-      file: original + '.jpg',
+      file: originalFile + '.jpg',
       link: `/images/${req.file.filename}.jpg`
     })
     while (files.length > 7) {
