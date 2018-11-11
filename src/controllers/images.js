@@ -65,7 +65,7 @@ route.post('/logo', verifyAdmin, up.single('file'), async function (
     if (await fs.exists(logo)) await fs.unlink(logo)
     await sharp(original)
       .resize(100, null, { withoutEnlargement: true })
-      .png({ progressive: true })
+      .png({ progressive: true, compressionLevel: 9, adaptiveFiltering: true })
       .toFile(logo)
     await fs.unlink(file)
     res.send('/images/logo.png')
@@ -90,7 +90,8 @@ route.post('/bg', verifyAdmin, up.single('file'), async function (
       .resize(1920, null, { withoutEnlargement: true })
       .jpeg({
         progressive: true,
-        quality: 95
+        quality: 85,
+        optimiseScans: true
       })
       .toFile(originalFile + '.jpg')
     await fs.unlink(originalFile)
