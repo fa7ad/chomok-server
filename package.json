@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "https://chomok.xyz",
+  "license": "UNLICENSED",
   "dependencies": {
     "@reach/router": "^1.1.1",
     "@sensorfactdev/qr-code-scanner": "^1.0.10",
