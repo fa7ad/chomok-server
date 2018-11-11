@@ -5,7 +5,7 @@
   "main": "server.js",
   "module": "server.js",
   "author": "Fahad Hossain <8bit.demoncoder@gmail.com> (https://fa7ad.github.io/)",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "private": true,
   "scripts": {
     "prebuild": "echo Don\\'t forget to create a client build",
