@@ -6704,10 +6704,10 @@ loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.3.1, loose-envify@^1.4
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
-lottery-wheel@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/lottery-wheel/-/lottery-wheel-1.3.3.tgz#ea857244ee265356886f3ca79d2595dc85869c07"
-  integrity sha512-vpqNrIpLpu7O2G8ul9RDVL2GrNkHWLxu1HiyzAZuLHE5YV3WrEjtuiPZVOTxiS6nAwki13QJ9KZeKxz8BnpO+g==
+lottery-wheel@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/lottery-wheel/-/lottery-wheel-2.0.0.tgz#51c13c050b06168fcceab1c271198a7805a7cfb3"
+  integrity sha512-qlK6zIL8AG3oa2vOKFCM2osazE1v1528lVoXgcvTqrX7sUr2poAOEPNoe6ETaeyNmVPEY4NSOGf/WrkXbpMPcA==
 
 lower-case@^1.1.1:
   version "1.1.4"
