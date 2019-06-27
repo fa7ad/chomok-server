@@ -37,7 +37,7 @@
     "pouchdb-find": "^7.1.1",
     "ramda": "^0.26.0",
     "sharp": "^0.22.0",
-    "shortid": "^2.2.13"
+    "shortid": "^2.2.14"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
