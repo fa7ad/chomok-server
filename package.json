@@ -40,7 +40,7 @@
     "shortid": "^2.2.14"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.2",
+    "@babel/core": "^7.4.5",
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
     "@babel/preset-env": "^7.4.5",
     "@babel/register": "^7.4.4",
