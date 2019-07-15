@@ -57,7 +57,7 @@
     "node-fetch": "^2.6.0",
     "rimraf": "^2.6.3",
     "webpack": "^4.35.3",
-    "webpack-cli": "^3.3.5",
+    "webpack-cli": "^3.3.6",
     "webpack-node-externals": "^1.7.2"
   }
 }
