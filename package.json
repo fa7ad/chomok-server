@@ -24,7 +24,7 @@
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "fs-extra": "^8.1.0",
-    "helmet": "^3.18.0",
+    "helmet": "^3.19.0",
     "joi": "^14.3.1",
     "luxon": "^1.17.1",
     "memorystore": "^1.6.1",
@@ -42,7 +42,7 @@
   "devDependencies": {
     "@babel/core": "^7.5.4",
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
-    "@babel/preset-env": "^7.5.4",
+    "@babel/preset-env": "^7.5.5",
     "@babel/register": "^7.5.5",
     "babel-eslint": "^10.0.2",
     "babel-loader": "^8.0.6",
@@ -56,7 +56,7 @@
     "fetch-cookie": "^0.7.3",
     "node-fetch": "^2.6.0",
     "rimraf": "^2.6.3",
-    "webpack": "^4.35.3",
+    "webpack": "^4.36.1",
     "webpack-cli": "^3.3.6",
     "webpack-node-externals": "^1.7.2"
   }
