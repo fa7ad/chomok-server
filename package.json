@@ -56,7 +56,7 @@
     "fetch-cookie": "^0.7.3",
     "node-fetch": "^2.6.0",
     "rimraf": "^2.6.3",
-    "webpack": "^4.37.0",
+    "webpack": "^4.38.0",
     "webpack-cli": "^3.3.6",
     "webpack-node-externals": "^1.7.2"
   }
