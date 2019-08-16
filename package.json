@@ -55,7 +55,7 @@
     "eslint-plugin-standard": "^4.0.0",
     "fetch-cookie": "^0.7.3",
     "node-fetch": "^2.6.0",
-    "rimraf": "^2.6.3",
+    "rimraf": "^3.0.0",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.6",
     "webpack-node-externals": "^1.7.2"
