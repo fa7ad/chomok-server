@@ -36,7 +36,7 @@
     "pouchdb": "^7.1.1",
     "pouchdb-find": "^7.1.1",
     "ramda": "^0.26.0",
-    "sharp": "^0.23.0",
+    "sharp": "^0.23.1",
     "shortid": "^2.2.15"
   },
   "devDependencies": {
